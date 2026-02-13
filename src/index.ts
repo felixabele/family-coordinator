@@ -1,30 +1,25 @@
 /**
- * Application Entry Point
+ * Application Entry Point - Signal Daemon
  *
  * Wires all components together:
  * - Environment validation
- * - Database and Redis connections
+ * - PostgreSQL database connection
+ * - Signal client and message listener
  * - LLM client and state stores
- * - Fastify web server with webhook routes
- * - BullMQ worker for message processing
  * - Graceful shutdown handlers
  */
 
-import Fastify from 'fastify';
-import rateLimit from '@fastify/rate-limit';
 import { validateEnv } from './config/env.js';
 import { logger } from './utils/logger.js';
 import { pool, closePool } from './db/pool.js';
-import { createQueueConnection, createWorkerConnection } from './queue/connection.js';
-import { createMessageQueue } from './queue/producer.js';
-import { createMessageWorker } from './queue/consumer.js';
+import { createSignalClient } from './signal/client.js';
+import { setupMessageListener } from './signal/listener.js';
 import { createAnthropicClient } from './llm/client.js';
 import { ConversationStore } from './state/conversation.js';
 import { IdempotencyStore } from './state/idempotency.js';
-import { webhookRoutes } from './webhook/routes.js';
 
 /**
- * Start the application
+ * Start the Signal bot daemon
  */
 async function start() {
   // 1. Validate environment
@@ -33,114 +28,55 @@ async function start() {
 
   logger.info({
     nodeEnv: config.NODE_ENV,
-    port: config.PORT,
     logLevel: config.LOG_LEVEL,
+    signalPhone: config.SIGNAL_PHONE_NUMBER.replace(/\d(?=\d{4})/g, '*'), // Mask phone number
   }, 'Environment validated');
 
-  // 2. Create Redis connections
-  logger.info('Creating Redis connections...');
-  const queueConnection = createQueueConnection(config.REDIS_URL);
-  const workerConnection = createWorkerConnection(config.REDIS_URL);
-
-  // 3. Create service instances
+  // 2. Create service instances
   logger.info('Initializing service instances...');
+
+  const signalClient = createSignalClient(config.SIGNAL_PHONE_NUMBER);
   const anthropicClient = createAnthropicClient(config.ANTHROPIC_API_KEY);
   const conversationStore = new ConversationStore(pool);
-  const idempotencyStore = new IdempotencyStore(queueConnection);
-  const messageQueue = createMessageQueue(queueConnection);
+  const idempotencyStore = new IdempotencyStore(pool);
 
   logger.info('Service instances created');
 
-  // 4. Create Fastify instance
-  logger.info('Creating Fastify server...');
-  const fastify = Fastify({
-    logger,
-  });
+  // 3. Run idempotency cleanup on startup
+  logger.info('Running idempotency cleanup...');
+  await idempotencyStore.cleanup();
+  logger.info('Idempotency cleanup complete');
 
-  // 5. Add custom content-type parser for raw body (MUST be before routes)
-  // This captures the raw body for signature validation
-  fastify.addContentTypeParser(
-    'application/json',
-    { parseAs: 'buffer' },
-    (req, body, done) => {
-      // Attach raw body to request for signature validation
-      (req as any).rawBody = body;
-
-      // Parse JSON manually
-      try {
-        const json = JSON.parse(body.toString('utf-8'));
-        done(null, json);
-      } catch (error) {
-        done(error as Error, undefined);
-      }
-    }
-  );
-
-  // 6. Register rate limiting
-  await fastify.register(rateLimit, {
-    max: 100, // 100 requests
-    timeWindow: '1 minute', // per minute per IP
-  });
-
-  logger.info('Rate limiting configured (100 req/min per IP)');
-
-  // 7. Register webhook routes
-  await fastify.register(webhookRoutes, {
-    messageQueue,
-    idempotencyStore,
-    config,
-  });
-
-  logger.info('Webhook routes registered');
-
-  // 8. Create BullMQ worker
-  logger.info('Creating BullMQ worker...');
-  const worker = createMessageWorker(workerConnection, {
+  // 4. Setup message listener
+  logger.info('Setting up Signal message listener...');
+  setupMessageListener({
+    signalClient,
     anthropicClient,
     conversationStore,
     idempotencyStore,
-    config,
-    logger,
   });
 
-  logger.info('BullMQ worker created and started');
+  // 5. Start listening for Signal messages
+  // Note: signal-sdk uses event emitters, so the listener is already active
+  // The client automatically listens after setupMessageListener registers handlers
+  logger.info(
+    { phoneNumber: config.SIGNAL_PHONE_NUMBER.replace(/\d(?=\d{4})/g, '*') },
+    '🚀 Signal bot started, listening for messages...'
+  );
 
-  // 9. Start Fastify server
-  try {
-    await fastify.listen({
-      port: config.PORT,
-      host: '0.0.0.0', // Required for cloud deployment
-    });
-
-    logger.info(
-      {
-        port: config.PORT,
-        env: config.NODE_ENV,
-      },
-      '🚀 Family Coordinator server started successfully'
-    );
-  } catch (error) {
-    logger.error({ error }, 'Failed to start server');
-    process.exit(1);
-  }
-
-  // 10. Graceful shutdown
+  // 6. Graceful shutdown handlers
   const shutdown = async (signal: string) => {
     logger.info({ signal }, 'Received shutdown signal, cleaning up...');
 
     try {
-      // Close Fastify (stops accepting new requests)
-      await fastify.close();
-      logger.info('Fastify server closed');
-
-      // Close BullMQ worker (finishes processing current jobs)
-      await worker.close();
-      logger.info('BullMQ worker closed');
-
-      // Close Redis connections
-      await queueConnection.quit();
-      await workerConnection.quit();
-      logger.info('Redis connections closed');
+      // Stop Signal client (if it has a stop/close method)
+      if (typeof (signalClient as any).stop === 'function') {
+        await (signalClient as any).stop();
+        logger.info('Signal client stopped');
+      } else if (typeof (signalClient as any).close === 'function') {
+        await (signalClient as any).close();
+        logger.info('Signal client closed');
+      }
 
       // Close PostgreSQL pool
       await closePool();

@@ -8,6 +8,7 @@
 import type Anthropic from '@anthropic-ai/sdk';
 import type { SignalClient } from './client.js';
 import type { SignalEnvelope } from './types.js';
+import type { CalendarIntent } from '../llm/types.js';
 import { sendSignalMessage } from './sender.js';
 import { ConversationStore } from '../state/conversation.js';
 import { IdempotencyStore } from '../state/idempotency.js';
@@ -33,11 +34,7 @@ export interface MessageListenerDeps {
  * @param intent - Extracted intent from LLM
  * @returns Response message text
  */
-function generateResponse(intent: {
-  intent: string;
-  entities: Record<string, unknown>;
-  clarification_needed?: string;
-}): string {
+function generateResponse(intent: CalendarIntent): string {
   switch (intent.intent) {
     case 'greeting':
       return "Hello! I'm your family calendar assistant. You can ask me to add events, check your schedule, or manage existing events.";
