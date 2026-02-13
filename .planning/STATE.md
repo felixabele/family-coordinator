@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & Signal Infrastructure)
-Plan: 2 of 3 in current phase
-Status: In progress
-Last activity: 2026-02-13 — Completed plan 01-02 (Signal Sender & Message Listener)
+Plan: 3 of 3 in current phase
+Status: At checkpoint (human-verify)
+Last activity: 2026-02-13 — Plan 01-03 Task 3 checkpoint (awaiting verification)
 
-Progress: [██████░░░░] 67%
+Progress: [████████░░] 89%
 
 ## Performance Metrics
 
@@ -57,6 +57,9 @@ Recent decisions affecting current work:
 - Event-driven message processing via signal-sdk event emitter (not polling) — 01-02
 - Mark messages as processed BEFORE processing to prevent race conditions — 01-02
 - Phase 1 calendar operations return stubs to validate pipeline without Google Calendar — 01-02
+- Migrate idempotency from Redis to PostgreSQL for consolidated state storage — 01-03
+- Run idempotency cleanup on application startup (7-day retention) — 01-03
+- Signal daemon uses event listener registration (no explicit startListening call) — 01-03
 
 ### Pending Todos
 
@@ -86,9 +89,9 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed plan 01-02-PLAN.md execution
+Stopped at: Plan 01-03 checkpoint at Task 3 (human-verify) - awaiting user verification
 Resume file: None
 
 ---
 *State initialized: 2026-02-13*
-*Last updated: 2026-02-13T17:39:51Z*
+*Last updated: 2026-02-13T17:42:00Z*
