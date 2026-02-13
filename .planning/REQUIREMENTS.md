@@ -1,7 +1,7 @@
 # Requirements: Family Coordinator
 
 **Defined:** 2026-02-13
-**Core Value:** Any family member can manage the shared calendar instantly through a WhatsApp message — no app switching, no friction.
+**Core Value:** Any family member can manage the shared calendar instantly through a Signal message — no app switching, no friction.
 
 ## v1 Requirements
 
@@ -24,12 +24,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Infrastructure
 
-- [ ] **INF-01**: Bot receives WhatsApp messages via official Business API webhooks
-- [ ] **INF-02**: Bot sends responses back via WhatsApp Business API
+- [ ] **INF-01**: Bot receives Signal messages via signal-cli
+- [ ] **INF-02**: Bot sends responses back via Signal
 - [ ] **INF-03**: Bot reads and writes to a shared Google Calendar
 - [ ] **INF-04**: Multiple family members can interact with the bot
-- [ ] **INF-05**: Bot is always-on (cloud-hosted, handles webhooks 24/7)
-- [ ] **INF-06**: Webhook processing returns 200 immediately with async processing (WhatsApp 5s timeout)
+- [ ] **INF-05**: Bot is always-on (cloud-hosted, listens for messages 24/7)
+- [ ] **INF-06**: Bot processes messages reliably without duplicates
 
 ## v2 Requirements
 
@@ -37,11 +37,11 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Advanced Features
 
-- **ADV-01**: Bot sends proactive event reminders via WhatsApp before events
+- **ADV-01**: Bot sends proactive event reminders via Signal before events
 - **ADV-02**: User can create recurring events ("Every Tuesday at 4pm - Piano lessons")
 - **ADV-03**: Bot detects scheduling conflicts before confirming new events
 - **ADV-04**: Bot supports smart relative date parsing ("next Tuesday", "in 2 weeks")
-- **ADV-05**: Bot supports WhatsApp interactive messages (quick reply buttons for confirmations)
+- **ADV-05**: Bot supports Signal message reactions for confirmations
 - **ADV-06**: Bot tracks which family member added/modified each event
 
 ## Out of Scope
@@ -53,7 +53,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | AI-suggested scheduling | Complex negotiation logic; users specify times directly |
 | Event analytics/reporting | Not core to calendar coordination |
 | Calendar sync across platforms | Google Calendar only; other platforms are separate products |
-| Mobile app | WhatsApp is the interface |
+| Mobile app | Signal is the interface |
 | User permissions/roles | All family members have equal CRUD access to shared calendar |
 
 ## Traceability
