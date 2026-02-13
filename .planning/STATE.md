@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & Webhook Infrastructure)
-Plan: 2 of 4 in current phase
+Plan: 3 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-13 — Completed plan 01-02 (WhatsApp webhook server with signature validation and async processing)
+Last activity: 2026-02-13 — Completed plan 01-03 (Claude LLM intent extraction and conversation state management)
 
-Progress: [███░░░░░░░] 12%
+Progress: [████░░░░░░] 18%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 4 min
-- Total execution time: 0.13 hours
+- Total plans completed: 3
+- Average duration: 3.7 min
+- Total execution time: 0.18 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 2 | 8 min | 4 min |
+| 1 | 3 | 11 min | 3.7 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (4 min)
-- Trend: Consistent velocity
+- Last 5 plans: 01-01 (4 min), 01-02 (4 min), 01-03 (3 min)
+- Trend: Consistent velocity with slight improvement
 
 *Updated after each plan completion*
 
@@ -54,6 +54,10 @@ Recent decisions affecting current work:
 - Immediate 200 response before async processing to prevent WhatsApp timeouts — 01-02
 - Separate Redis connections for BullMQ Queue (fail-fast) vs Worker (infinite retry) — 01-02
 - Mark messages as processed BEFORE enqueueing to prevent race conditions — 01-02
+- Claude Sonnet 4 with forced tool use for guaranteed structured intent extraction — 01-03
+- Prompt caching (cache_control: ephemeral) for 90% cost reduction on LLM calls — 01-03
+- 30-minute conversation session TTL balances UX and state cleanup — 01-03
+- Message history limited to 5 entries (MAX_HISTORY_MESSAGES) to control token costs — 01-03
 
 ### Pending Todos
 
@@ -67,8 +71,8 @@ None yet.
 
 **Phase 1 Considerations:**
 - ✅ WhatsApp webhook signature validation implemented with timing-safe comparison (01-02)
-- LLM prompt caching needed from start to prevent cost explosion
-- Conversation state must use Redis/PostgreSQL, not file-based (scalability)
+- ✅ LLM prompt caching implemented for 90% cost reduction (01-03)
+- ✅ Conversation state using PostgreSQL with automatic session expiry (01-03)
 - Template approval for notifications has 48-hour lead time — submit early
 
 **Phase 2 Considerations:**
@@ -81,7 +85,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed plan 01-02-PLAN.md execution
+Stopped at: Completed plan 01-03-PLAN.md execution
 Resume file: None
 
 ---
