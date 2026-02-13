@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 ## Current Position
 
 Phase: 1 of 4 (Foundation & Webhook Infrastructure)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-02-13 — Completed plan 01-01 (Project scaffold and foundation infrastructure)
+Last activity: 2026-02-13 — Completed plan 01-02 (WhatsApp webhook server with signature validation and async processing)
 
-Progress: [██░░░░░░░░] 6%
+Progress: [███░░░░░░░] 12%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
+- Total plans completed: 2
 - Average duration: 4 min
-- Total execution time: 0.07 hours
+- Total execution time: 0.13 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 1 | 4 min | 4 min |
+| 1 | 2 | 8 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min)
-- Trend: Just started
+- Last 5 plans: 01-01 (4 min), 01-02 (4 min)
+- Trend: Consistent velocity
 
 *Updated after each plan completion*
 
@@ -50,6 +50,10 @@ Recent decisions affecting current work:
 - ESM modules exclusively (type: module) for modern Node.js standard — 01-01
 - Zod for environment validation with fail-fast approach — 01-01
 - Pino for structured logging (JSON in production, pretty in dev) — 01-01
+- Timing-safe HMAC comparison (crypto.timingSafeEqual) for webhook security — 01-02
+- Immediate 200 response before async processing to prevent WhatsApp timeouts — 01-02
+- Separate Redis connections for BullMQ Queue (fail-fast) vs Worker (infinite retry) — 01-02
+- Mark messages as processed BEFORE enqueueing to prevent race conditions — 01-02
 
 ### Pending Todos
 
@@ -62,7 +66,7 @@ None yet.
 (Issues that affect future work)
 
 **Phase 1 Considerations:**
-- WhatsApp webhook signature validation must be implemented immediately for security
+- ✅ WhatsApp webhook signature validation implemented with timing-safe comparison (01-02)
 - LLM prompt caching needed from start to prevent cost explosion
 - Conversation state must use Redis/PostgreSQL, not file-based (scalability)
 - Template approval for notifications has 48-hour lead time — submit early
@@ -77,7 +81,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed plan 01-01-PLAN.md execution
+Stopped at: Completed plan 01-02-PLAN.md execution
 Resume file: None
 
 ---
