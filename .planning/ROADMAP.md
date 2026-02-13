@@ -29,10 +29,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Bot sends responses back via WhatsApp without message duplication
   4. Bot understands natural language calendar intent using Claude LLM
   5. Bot maintains conversation state across multiple messages from the same user
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] (Plans will be created during planning phase)
+- [ ] 01-01-PLAN.md -- Project scaffold, config validation, database setup, and logging
+- [ ] 01-02-PLAN.md -- WhatsApp webhook server with signature validation and BullMQ queue
+- [ ] 01-03-PLAN.md -- Claude LLM intent extraction and conversation state management
+- [ ] 01-04-PLAN.md -- Message processing pipeline, WhatsApp responses, and main entry point
 
 ### Phase 2: Calendar Integration & CRUD
 **Goal**: Family members can perform all calendar operations (view, add, edit, delete) through WhatsApp
@@ -83,11 +86,11 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Webhook Infrastructure | 0/TBD | Not started | - |
+| 1. Foundation & Webhook Infrastructure | 0/4 | Planning complete | - |
 | 2. Calendar Integration & CRUD | 0/TBD | Not started | - |
 | 3. Multi-User & Polish | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
