@@ -29,10 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Bot understands natural language calendar intent using Claude LLM
   4. Bot maintains conversation state across multiple messages from the same user
   5. Bot runs as an always-on service listening for incoming Signal messages
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] (Plans will be created during planning phase)
+- [ ] 01-01-PLAN.md — Update dependencies and config for Signal, create Signal client wrapper
+- [ ] 01-02-PLAN.md — Create Signal sender and message listener with processing pipeline
+- [ ] 01-03-PLAN.md — Rewrite entry point, remove WhatsApp code, verify end-to-end
 
 ### Phase 2: Calendar Integration & CRUD
 **Goal**: Family members can perform all calendar operations (view, add, edit, delete) through Signal
@@ -86,11 +88,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Signal Infrastructure | 0/TBD | Replanning (switched from WhatsApp to Signal) | - |
+| 1. Foundation & Signal Infrastructure | 0/3 | Planned | - |
 | 2. Calendar Integration & CRUD | 0/TBD | Not started | - |
 | 3. Multi-User & Polish | 0/TBD | Not started | - |
 | 4. Advanced Features | 0/TBD | Not started | - |
 
 ---
 *Roadmap created: 2026-02-13*
-*Last updated: 2026-02-13 — switched from WhatsApp to Signal*
+*Last updated: 2026-02-13 — Phase 1 plans created (WhatsApp to Signal migration)*
