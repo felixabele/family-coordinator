@@ -2,22 +2,32 @@
  * Custom Error Classes
  */
 
-export class WebhookValidationError extends Error {
-  code = 'WEBHOOK_VALIDATION_ERROR';
+export class SignalConnectionError extends Error {
+  code = 'SIGNAL_CONNECTION_ERROR';
 
   constructor(message: string) {
     super(message);
-    this.name = 'WebhookValidationError';
+    this.name = 'SignalConnectionError';
     Error.captureStackTrace(this, this.constructor);
   }
 }
 
-export class WhatsAppApiError extends Error {
-  code = 'WHATSAPP_API_ERROR';
+export class SignalSendError extends Error {
+  code = 'SIGNAL_SEND_ERROR';
 
   constructor(message: string) {
     super(message);
-    this.name = 'WhatsAppApiError';
+    this.name = 'SignalSendError';
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export class MessageProcessingError extends Error {
+  code = 'MESSAGE_PROCESSING_ERROR';
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'MessageProcessingError';
     Error.captureStackTrace(this, this.constructor);
   }
 }
