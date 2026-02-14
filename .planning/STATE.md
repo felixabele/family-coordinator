@@ -5,35 +5,37 @@
 See: .planning/PROJECT.md (updated 2026-02-13)
 
 **Core value:** Any family member can manage the shared calendar instantly through a Signal message — no app switching, no friction.
-**Current focus:** Phase 1 - Foundation & Signal Infrastructure
+**Current focus:** Phase 2 - Calendar Integration & CRUD
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation & Signal Infrastructure)
-Plan: 3 of 3 in current phase
-Status: At checkpoint (human-verify)
-Last activity: 2026-02-13 — Plan 01-03 Task 3 checkpoint (awaiting verification)
+Phase: 1 of 4 (Foundation & Signal Infrastructure) — COMPLETE
+Plan: 3 of 3 in current phase — all verified
+Status: Phase 1 complete, Phase 2 ready to plan
+Last activity: 2026-02-14 — Phase 1 verified end-to-end (Signal send/receive + Claude LLM working)
 
-Progress: [████████░░] 89%
+Progress: [██████████] 100% (Phase 1)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+
+- Total plans completed: 3
 - Average duration: 4 min
-- Total execution time: 0.15 hours
+- Total execution time: 0.2 hours
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1 | 2 | 7 min | 4 min |
+| Phase | Plans | Total  | Avg/Plan |
+| ----- | ----- | ------ | -------- |
+| 1     | 3     | 12 min | 4 min    |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (5 min), 01-02 (2 min)
-- Trend: Accelerating - Phase 1 foundation is solid
 
-*Updated after each plan completion*
+- Last 5 plans: 01-01 (5 min), 01-02 (2 min), 01-03 (5 min)
+- Trend: Phase 1 complete and verified
+
+_Updated after each plan completion_
 
 ## Accumulated Context
 
@@ -49,7 +51,7 @@ Recent decisions affecting current work:
 - ESM modules exclusively (type: module) for modern Node.js standard
 - Zod for environment validation with fail-fast approach
 - Pino for structured logging (JSON in production, pretty in dev)
-- signal-sdk from GitHub (benoitpetit/signal-sdk) for Signal messaging integration — 01-01
+- signal-sdk from npm (not GitHub — GitHub install missing dist/) for Signal messaging integration — 01-01
 - E.164 phone number format validation with regex in Zod schema — 01-01
 - Retry config: 3 max attempts, exponential backoff from 1s to 10s — 01-01
 - Rate limiting: 5 concurrent, 200ms minimum interval between API calls — 01-01
@@ -60,6 +62,10 @@ Recent decisions affecting current work:
 - Migrate idempotency from Redis to PostgreSQL for consolidated state storage — 01-03
 - Run idempotency cleanup on application startup (7-day retention) — 01-03
 - Signal daemon uses event listener registration (no explicit startListening call) — 01-03
+- signal-sdk spawns its own signal-cli process via connect() — no separate daemon needed — verification
+- Use system signal-cli (brew) path instead of bundled binary — verification
+- Set Anthropic baseURL explicitly to avoid ANTHROPIC_BASE_URL env var (Portkey proxy) — verification
+- Docker PostgreSQL on port 5433 to avoid conflict with local PostgreSQL — verification
 
 ### Pending Todos
 
@@ -71,27 +77,29 @@ None yet.
 
 (Issues that affect future work)
 
-**Phase 1 Considerations:**
+**Phase 1: COMPLETE**
+
 - ✅ Signal client foundation established with types and wrapper (01-01)
 - ✅ Message processing pipeline complete with LLM integration (01-02)
-- signal-cli daemon must be running before Plan 03 can be tested
-- Device linking may require interactive QR code scanning during first connection
-- TypeScript definitions for signal-sdk may need refinement during actual usage
-- signal-sdk is CommonJS without proper TypeScript definitions
+- ✅ Entry point, idempotency migration, WhatsApp cleanup (01-03)
+- ✅ End-to-end verified: receive Signal message → Claude intent extraction → send response
 
 **Phase 2 Considerations:**
+
 - Timezone handling must use explicit IANA timezones to prevent calendar chaos
 - Google Calendar quota attribution requires quotaUser parameter per family member
 
 **Phase 3 Considerations:**
+
 - Multi-user Signal identification pattern needs research (how to identify which family member sent message)
 
 ## Session Continuity
 
-Last session: 2026-02-13
-Stopped at: Plan 01-03 checkpoint at Task 3 (human-verify) - awaiting user verification
+Last session: 2026-02-14
+Stopped at: Phase 1 complete and verified. Ready for Phase 2 planning.
 Resume file: None
 
 ---
-*State initialized: 2026-02-13*
-*Last updated: 2026-02-13T17:42:00Z*
+
+_State initialized: 2026-02-13_
+_Last updated: 2026-02-14 — Phase 1 verified, ready for Phase 2_
