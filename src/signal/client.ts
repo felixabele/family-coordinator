@@ -6,15 +6,15 @@
  */
 
 // @ts-ignore - signal-sdk is a CommonJS module without proper TypeScript definitions
-import { SignalCli } from 'signal-sdk';
+import { SignalCli } from "signal-sdk";
 import {
   SIGNAL_MAX_CONCURRENT,
   SIGNAL_RATE_LIMIT_MS,
   SIGNAL_RETRY_MAX_ATTEMPTS,
   SIGNAL_RETRY_INITIAL_DELAY_MS,
   SIGNAL_RETRY_MAX_DELAY_MS,
-} from '../config/constants.js';
-import { logger } from '../utils/logger.js';
+} from "../config/constants.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Type alias for the signal-sdk SignalCli instance
@@ -28,43 +28,24 @@ export type SignalClient = typeof SignalCli.prototype;
  * @returns Configured SignalCli instance
  */
 export function createSignalClient(phoneNumber: string): SignalClient {
-  logger.info({ phoneNumber }, 'Creating Signal client');
+  logger.info({ phoneNumber }, "Creating Signal client");
 
-  // Create SignalCli instance with phone number
-  const client = new SignalCli(phoneNumber);
+  // Use system-installed signal-cli (e.g. via brew) instead of the bundled one
+  const signalCliPath = process.env.SIGNAL_CLI_PATH || "signal-cli";
 
-  // Configure retry behavior with exponential backoff
-  // Note: signal-sdk may or may not support these configs directly
-  // We're setting them according to the research, but actual implementation
-  // may need adjustment once we test against the real API
-  const retryConfig = {
-    maxAttempts: SIGNAL_RETRY_MAX_ATTEMPTS,
-    initialDelay: SIGNAL_RETRY_INITIAL_DELAY_MS,
-    maxDelay: SIGNAL_RETRY_MAX_DELAY_MS,
-    backoffMultiplier: 2,
-  };
-
-  const rateLimiterConfig = {
-    maxConcurrent: SIGNAL_MAX_CONCURRENT,
-    minInterval: SIGNAL_RATE_LIMIT_MS,
-  };
-
-  // If signal-sdk supports config, apply it here
-  // Based on the README, config might be passed differently
-  // This is a placeholder for the actual configuration mechanism
-  if (typeof (client as any).configure === 'function') {
-    (client as any).configure({
-      retry: retryConfig,
-      rateLimiter: rateLimiterConfig,
-    });
-  }
+  // Create SignalCli instance with path, phone number, and config
+  const client = new SignalCli(signalCliPath, phoneNumber, {
+    maxConcurrentRequests: SIGNAL_MAX_CONCURRENT,
+    minRequestInterval: SIGNAL_RATE_LIMIT_MS,
+  });
 
   logger.info(
     {
-      retry: retryConfig,
-      rateLimiter: rateLimiterConfig,
+      signalCliPath,
+      maxConcurrent: SIGNAL_MAX_CONCURRENT,
+      minInterval: SIGNAL_RATE_LIMIT_MS,
     },
-    'Signal client created with retry and rate limiting config'
+    "Signal client created",
   );
 
   return client;

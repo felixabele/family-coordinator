@@ -2,7 +2,7 @@
  * Anthropic SDK Client Factory
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+import Anthropic from "@anthropic-ai/sdk";
 
 /**
  * Creates an Anthropic SDK client instance
@@ -13,5 +13,6 @@ import Anthropic from '@anthropic-ai/sdk';
 export function createAnthropicClient(apiKey: string): Anthropic {
   return new Anthropic({
     apiKey,
+    baseURL: "https://api.anthropic.com",
   });
 }

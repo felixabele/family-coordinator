@@ -5,15 +5,15 @@
  * receive -> deduplicate -> state -> LLM intent extraction -> response -> send
  */
 
-import type Anthropic from '@anthropic-ai/sdk';
-import type { SignalClient } from './client.js';
-import type { SignalEnvelope } from './types.js';
-import type { CalendarIntent } from '../llm/types.js';
-import { sendSignalMessage } from './sender.js';
-import { ConversationStore } from '../state/conversation.js';
-import { IdempotencyStore } from '../state/idempotency.js';
-import { extractIntent } from '../llm/intent.js';
-import { logger } from '../utils/logger.js';
+import type Anthropic from "@anthropic-ai/sdk";
+import type { SignalClient } from "./client.js";
+import type { SignalEnvelope } from "./types.js";
+import type { CalendarIntent } from "../llm/types.js";
+import { sendSignalMessage } from "./sender.js";
+import { ConversationStore } from "../state/conversation.js";
+import { IdempotencyStore } from "../state/idempotency.js";
+import { extractIntent } from "../llm/intent.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Dependencies for the message listener
@@ -36,31 +36,31 @@ export interface MessageListenerDeps {
  */
 function generateResponse(intent: CalendarIntent): string {
   switch (intent.intent) {
-    case 'greeting':
+    case "greeting":
       return "Hello! I'm your family calendar assistant. You can ask me to add events, check your schedule, or manage existing events.";
 
-    case 'help':
+    case "help":
       return `I can help you with:
 - Adding events: 'Add soccer practice Tuesday at 4pm'
 - Checking schedule: 'What's on today?'
 - Editing events: 'Move dentist to Thursday'
 - Deleting events: 'Cancel soccer this week'`;
 
-    case 'create_event':
-    case 'query_events':
-    case 'update_event':
-    case 'delete_event': {
+    case "create_event":
+    case "query_events":
+    case "update_event":
+    case "delete_event": {
       // Format entities for display
       const entitySummary = Object.entries(intent.entities)
         .filter(([_, value]) => value !== undefined && value !== null)
         .map(([key, value]) => `${key}: ${value}`)
-        .join(', ');
+        .join(", ");
 
-      const intentLabel = intent.intent.replace('_', ' ');
-      return `I understood you want to ${intentLabel}. Calendar integration is coming in Phase 2! For now, I can confirm I understood: ${entitySummary || 'no specific details'}`;
+      const intentLabel = intent.intent.replace("_", " ");
+      return `I understood you want to ${intentLabel}. Calendar integration is coming in Phase 2! For now, I can confirm I understood: ${entitySummary || "no specific details"}`;
     }
 
-    case 'unclear':
+    case "unclear":
       return (
         intent.clarification_needed ||
         "I'm not sure what you mean. Could you rephrase that? You can ask me about your calendar."
@@ -88,18 +88,25 @@ function generateResponse(intent: CalendarIntent): string {
  * @param deps - Dependencies (SignalClient, Anthropic, stores)
  */
 export function setupMessageListener(deps: MessageListenerDeps): void {
-  logger.info('Setting up Signal message listener');
+  logger.info("Setting up Signal message listener");
 
   // Register the message event handler
-  deps.signalClient.on('message', async (envelope: SignalEnvelope) => {
+  // signal-sdk emits response.params which wraps envelope: { envelope: {...} }
+  deps.signalClient.on("message", async (params: any) => {
     let phoneNumber: string | undefined;
     let messageId: string | undefined;
 
     try {
+      // Log raw params to understand the structure
+      logger.debug({ params: JSON.stringify(params) }, "Raw message event");
+
+      // Extract envelope — signal-sdk wraps it in { envelope: {...} }
+      const envelope: SignalEnvelope = params?.envelope || params;
+
       // Extract message data from envelope
       phoneNumber = envelope.source || envelope.sourceNumber;
-      messageId = envelope.timestamp.toString();
-      const text = envelope.dataMessage?.message || '';
+      messageId = envelope.timestamp?.toString();
+      const text = envelope.dataMessage?.message || "";
 
       logger.debug(
         {
@@ -108,12 +115,12 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
           hasText: !!text,
           isGroup: !!envelope.dataMessage?.groupInfo,
         },
-        'Received Signal message'
+        "Received Signal message",
       );
 
       // Skip if no text (media-only messages, typing indicators, sync messages)
       if (!text) {
-        logger.debug({ messageId }, 'Skipping message without text content');
+        logger.debug({ messageId }, "Skipping message without text content");
         return;
       }
 
@@ -124,20 +131,19 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
             messageId,
             groupId: envelope.dataMessage.groupInfo.groupId,
           },
-          'Skipping group message (not supported in Phase 1)'
+          "Skipping group message (not supported in Phase 1)",
         );
         return;
       }
 
       // Idempotency check
-      const isAlreadyProcessed = await deps.idempotencyStore.isProcessed(
-        messageId
-      );
+      const isAlreadyProcessed =
+        await deps.idempotencyStore.isProcessed(messageId);
 
       if (isAlreadyProcessed) {
         logger.debug(
           { messageId, phoneNumber },
-          'Duplicate message detected, skipping'
+          "Duplicate message detected, skipping",
         );
         return;
       }
@@ -147,20 +153,20 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
 
       logger.info(
         { phoneNumber, messageId, text },
-        'Processing new Signal message'
+        "Processing new Signal message",
       );
 
       // Get conversation state
       const state = await deps.conversationStore.getState(phoneNumber);
 
       // Add user message to history
-      await deps.conversationStore.addToHistory(phoneNumber, 'user', text);
+      await deps.conversationStore.addToHistory(phoneNumber, "user", text);
 
       // Extract intent via Claude LLM
       const intent = await extractIntent(
         deps.anthropicClient,
         text,
-        state?.messageHistory || []
+        state?.messageHistory || [],
       );
 
       logger.info(
@@ -170,7 +176,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
           confidence: intent.confidence,
           hasEntities: Object.keys(intent.entities).length > 0,
         },
-        'Intent extracted successfully'
+        "Intent extracted successfully",
       );
 
       // Generate response based on intent
@@ -182,22 +188,22 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       // Add assistant response to history
       await deps.conversationStore.addToHistory(
         phoneNumber,
-        'assistant',
-        response
+        "assistant",
+        response,
       );
 
       logger.info(
         { phoneNumber, messageId, intent: intent.intent },
-        'Message processed successfully'
+        "Message processed successfully",
       );
     } catch (error) {
       logger.error(
         {
-          error,
+          err: error instanceof Error ? error : new Error(String(error)),
           phoneNumber,
           messageId,
         },
-        'Error processing Signal message'
+        "Error processing Signal message",
       );
 
       // Attempt to send error response to user
@@ -206,15 +212,18 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
           await sendSignalMessage(
             deps.signalClient,
             phoneNumber,
-            'Sorry, I had trouble processing your message. Please try again.'
+            "Sorry, I had trouble processing your message. Please try again.",
           );
         } catch (sendError) {
           logger.error(
             {
-              error: sendError,
+              err:
+                sendError instanceof Error
+                  ? sendError
+                  : new Error(String(sendError)),
               phoneNumber,
             },
-            'Failed to send error response to user'
+            "Failed to send error response to user",
           );
         }
       }
@@ -223,5 +232,5 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
     }
   });
 
-  logger.info('Signal message listener setup complete');
+  logger.info("Signal message listener setup complete");
 }
