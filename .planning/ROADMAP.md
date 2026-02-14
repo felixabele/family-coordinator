@@ -54,11 +54,12 @@ Plans:
 5. User can delete events with confirmation, preventing accidental deletions
 6. Bot confirms every calendar mutation with a summary of what changed
 7. Bot asks for clarification when multiple events match or confidence is low instead of guessing
-   **Plans**: TBD
+   **Plans**: 2 plans
 
 Plans:
 
-- [ ] (Plans will be created during planning phase)
+- [ ] 02-01-PLAN.md — Google Calendar client, types, timezone utilities, and CRUD operations
+- [ ] 02-02-PLAN.md — Wire calendar into Signal pipeline with German responses
 
 ### Phase 3: Multi-User & Polish
 
@@ -102,7 +103,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase                                 | Plans Complete | Status      | Completed  |
 | ------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
-| 2. Calendar Integration & CRUD        | 0/TBD          | Not started | -          |
+| 2. Calendar Integration & CRUD        | 0/2            | Not started | -          |
 | 3. Multi-User & Polish                | 0/TBD          | Not started | -          |
 | 4. Advanced Features                  | 0/TBD          | Not started | -          |
 
