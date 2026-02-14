@@ -9,32 +9,32 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 
 ## Current Position
 
-Phase: 2 of 4 (Calendar Integration & CRUD) — IN PROGRESS
-Plan: 1 of 2 in current phase — executing
-Status: Phase 2 Plan 1 complete
-Last activity: 2026-02-14 — Plan 02-01 complete (Calendar foundation with CRUD operations)
+Phase: 2 of 4 (Calendar Integration & CRUD) — COMPLETE
+Plan: 2 of 2 in current phase — complete
+Status: Phase 2 complete
+Last activity: 2026-02-14 — Plan 02-02 complete (Calendar pipeline integration)
 
-Progress: [█████▓░░░░] 30% (Phase 1 complete, Phase 2 Plan 1 complete)
+Progress: [███████░░░] 50% (Phase 1 complete, Phase 2 complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 4 min
-- Total execution time: 0.27 hours
+- Total execution time: 0.32 hours
 
 **By Phase:**
 
 | Phase | Plans | Total  | Avg/Plan |
 | ----- | ----- | ------ | -------- |
 | 1     | 3     | 12 min | 4 min    |
-| 2     | 1     | 4 min  | 4 min    |
+| 2     | 2     | 7 min  | 3.5 min  |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-01 (5 min), 01-02 (2 min), 01-03 (5 min), 02-01 (4 min)
-- Trend: Consistent 4-minute average execution time
+- Last 5 plans: 01-02 (2 min), 01-03 (5 min), 02-01 (4 min), 02-02 (3 min)
+- Trend: Accelerating - Phase 2 completed in 3-4 minutes per plan
 
 _Updated after each plan completion_
 
@@ -72,6 +72,10 @@ Recent decisions affecting current work:
 - Date inference: assume today if time hasn't passed, tomorrow if passed — 02-01
 - Event search disambiguation: return single/multiple/not found for LLM processing — 02-01
 - Retry configuration: 3 max attempts on 429 and 5xx errors for Calendar API — 02-01
+- German localization for all user responses with casual du-form tone — 02-02
+- Bot asks for time when creating event without time specified — 02-02
+- Compact event display format: 'HH:mm - Title | HH:mm - Title' — 02-02
+- Disambiguation shows numbered list for multiple event matches — 02-02
 
 ### Pending Todos
 
@@ -90,10 +94,11 @@ None yet.
 - ✅ Entry point, idempotency migration, WhatsApp cleanup (01-03)
 - ✅ End-to-end verified: receive Signal message → Claude intent extraction → send response
 
-**Phase 2: IN PROGRESS**
+**Phase 2: COMPLETE**
 
 - ✅ Calendar foundation with CRUD operations (02-01)
-- 🔄 Next: Calendar pipeline integration (02-02)
+- ✅ Calendar pipeline integration (02-02)
+- ✅ End-to-end verified: Signal message → Claude (German) → Google Calendar → Signal response
 
 **Phase 2 Considerations:**
 
@@ -108,10 +113,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 02-01-PLAN.md (Calendar foundation with CRUD operations)
+Stopped at: Completed 02-02-PLAN.md (Calendar pipeline integration) - Phase 2 complete
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-14 — Plan 02-01 complete (Calendar CRUD foundation)_
+_Last updated: 2026-02-14 — Plan 02-02 complete (Calendar pipeline integration) - Phase 2 complete_
