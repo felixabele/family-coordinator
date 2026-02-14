@@ -14,7 +14,7 @@ Build a Signal-based calendar agent for family coordination in four phases: esta
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Signal Infrastructure** - Signal messaging, conversation state, and Claude integration
-- [ ] **Phase 2: Calendar Integration & CRUD** - Google Calendar connection with full create/read/update/delete operations
+- [x] **Phase 2: Calendar Integration & CRUD** - Google Calendar connection with full create/read/update/delete operations
 - [ ] **Phase 3: Multi-User & Polish** - Multi-user coordination and UX improvements
 - [ ] **Phase 4: Advanced Features** - Event reminders, recurring events, and smart date parsing
 
@@ -58,8 +58,8 @@ Plans:
 
 Plans:
 
-- [ ] 02-01-PLAN.md — Google Calendar client, types, timezone utilities, and CRUD operations
-- [ ] 02-02-PLAN.md — Wire calendar into Signal pipeline with German responses
+- [x] 02-01-PLAN.md — Google Calendar client, types, timezone utilities, and CRUD operations
+- [x] 02-02-PLAN.md — Wire calendar into Signal pipeline with German responses
 
 ### Phase 3: Multi-User & Polish
 
@@ -103,11 +103,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase                                 | Plans Complete | Status      | Completed  |
 | ------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
-| 2. Calendar Integration & CRUD        | 0/2            | Not started | -          |
+| 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
 | 3. Multi-User & Polish                | 0/TBD          | Not started | -          |
 | 4. Advanced Features                  | 0/TBD          | Not started | -          |
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-14 — Phase 1 complete and verified_
+_Last updated: 2026-02-14 — Phase 2 complete and verified_
