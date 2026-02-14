@@ -2,15 +2,15 @@
  * Claude Intent Extraction via Tool Use
  */
 
-import Anthropic from '@anthropic-ai/sdk';
-import { logger } from '../utils/logger.js';
-import { MAX_HISTORY_MESSAGES } from '../config/constants.js';
-import { CALENDAR_SYSTEM_PROMPT } from './prompts.js';
+import Anthropic from "@anthropic-ai/sdk";
+import { logger } from "../utils/logger.js";
+import { MAX_HISTORY_MESSAGES } from "../config/constants.js";
+import { CALENDAR_SYSTEM_PROMPT } from "./prompts.js";
 import {
   CalendarIntent,
   CalendarIntentSchema,
   IntentExtractionError,
-} from './types.js';
+} from "./types.js";
 
 /**
  * Claude tool definition for calendar intent parsing
@@ -20,58 +20,68 @@ import {
  * we always get structured output (no free-text parsing needed).
  */
 const calendarIntentTool: Anthropic.Tool = {
-  name: 'parse_calendar_intent',
+  name: "parse_calendar_intent",
   description:
-    'Parse a natural language message and extract calendar intent with entities',
+    "Parse a natural language message and extract calendar intent with entities",
   input_schema: {
-    type: 'object',
+    type: "object",
     properties: {
       intent: {
-        type: 'string',
+        type: "string",
         enum: [
-          'create_event',
-          'query_events',
-          'update_event',
-          'delete_event',
-          'greeting',
-          'help',
-          'unclear',
+          "create_event",
+          "query_events",
+          "update_event",
+          "delete_event",
+          "greeting",
+          "help",
+          "unclear",
         ],
-        description: 'The primary intent of the user message',
+        description: "The primary intent of the user message",
       },
       entities: {
-        type: 'object',
+        type: "object",
         properties: {
           title: {
-            type: 'string',
-            description: 'Event title or description',
+            type: "string",
+            description: "Event title or description",
           },
           date: {
-            type: 'string',
-            description: 'Event date in YYYY-MM-DD format',
+            type: "string",
+            description: "Event date in YYYY-MM-DD format",
           },
           time: {
-            type: 'string',
-            description: 'Event time in HH:MM 24-hour format',
+            type: "string",
+            description: "Event time in HH:MM 24-hour format",
           },
           duration_minutes: {
-            type: 'number',
-            description: 'Event duration in minutes',
+            type: "number",
+            description: "Event duration in minutes",
+          },
+          end_time: {
+            type: "string",
+            description:
+              "Event end time in HH:MM 24-hour format (when user specifies explicit end time)",
+          },
+          event_search_query: {
+            type: "string",
+            description:
+              "Search text to find the target event for update/delete operations",
           },
         },
-        description: 'Extracted calendar entities',
+        description: "Extracted calendar entities",
       },
       confidence: {
-        type: 'number',
-        description: 'Confidence score between 0 and 1',
+        type: "number",
+        description: "Confidence score between 0 and 1",
       },
       clarification_needed: {
-        type: 'string',
+        type: "string",
         description:
-          'Message to user when confidence < 0.7 or entities are missing',
+          "Message to user when confidence < 0.7 or entities are missing",
       },
     },
-    required: ['intent', 'entities', 'confidence'],
+    required: ["intent", "entities", "confidence"],
   },
 };
 
@@ -79,7 +89,7 @@ const calendarIntentTool: Anthropic.Tool = {
  * Message history entry for LLM context
  */
 export interface MessageHistoryEntry {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -95,7 +105,7 @@ export interface MessageHistoryEntry {
 export async function extractIntent(
   client: Anthropic,
   userMessage: string,
-  conversationHistory?: MessageHistoryEntry[]
+  conversationHistory?: MessageHistoryEntry[],
 ): Promise<CalendarIntent> {
   try {
     // Build message context with current date/time for relative date resolution
@@ -119,7 +129,7 @@ export async function extractIntent(
 
     // Add current user message
     messages.push({
-      role: 'user',
+      role: "user",
       content: userMessageWithContext,
     });
 
@@ -128,24 +138,24 @@ export async function extractIntent(
         messageCount: messages.length,
         historyCount: conversationHistory?.length ?? 0,
       },
-      'Calling Claude for intent extraction'
+      "Calling Claude for intent extraction",
     );
 
     // Call Claude with tool use and prompt caching
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: "claude-sonnet-4-20250514",
       max_tokens: 1024,
       system: [
         {
-          type: 'text',
+          type: "text",
           text: CALENDAR_SYSTEM_PROMPT,
-          cache_control: { type: 'ephemeral' },
+          cache_control: { type: "ephemeral" },
         },
       ],
       tools: [calendarIntentTool],
       tool_choice: {
-        type: 'tool',
-        name: 'parse_calendar_intent',
+        type: "tool",
+        name: "parse_calendar_intent",
       },
       messages,
     });
@@ -153,12 +163,12 @@ export async function extractIntent(
     // Log cache metrics for monitoring
     if (response.usage) {
       const cacheReadTokens =
-        'cache_read_input_tokens' in response.usage
-          ? response.usage.cache_read_input_tokens ?? 0
+        "cache_read_input_tokens" in response.usage
+          ? (response.usage.cache_read_input_tokens ?? 0)
           : 0;
       const cacheCreationTokens =
-        'cache_creation_input_tokens' in response.usage
-          ? response.usage.cache_creation_input_tokens ?? 0
+        "cache_creation_input_tokens" in response.usage
+          ? (response.usage.cache_creation_input_tokens ?? 0)
           : 0;
 
       logger.info(
@@ -168,38 +178,36 @@ export async function extractIntent(
           cache_read_tokens: cacheReadTokens,
           cache_creation_tokens: cacheCreationTokens,
         },
-        'Claude API usage metrics'
+        "Claude API usage metrics",
       );
 
       // Log cache hit/miss
       if (cacheReadTokens > 0) {
         logger.debug(
           { tokens: cacheReadTokens },
-          'Prompt cache HIT (cost savings)'
+          "Prompt cache HIT (cost savings)",
         );
       } else if (cacheCreationTokens > 0) {
         logger.debug(
           { tokens: cacheCreationTokens },
-          'Prompt cache MISS (cache created)'
+          "Prompt cache MISS (cache created)",
         );
       }
     }
 
     // Find the tool_use block in response
     const toolUseBlock = response.content.find(
-      (block) => block.type === 'tool_use'
+      (block) => block.type === "tool_use",
     );
 
-    if (!toolUseBlock || toolUseBlock.type !== 'tool_use') {
+    if (!toolUseBlock || toolUseBlock.type !== "tool_use") {
       throw new IntentExtractionError(
-        'No tool_use block found in Claude response'
+        "No tool_use block found in Claude response",
       );
     }
 
     // Validate the tool input with Zod schema
-    const validationResult = CalendarIntentSchema.safeParse(
-      toolUseBlock.input
-    );
+    const validationResult = CalendarIntentSchema.safeParse(toolUseBlock.input);
 
     if (!validationResult.success) {
       logger.error(
@@ -207,11 +215,11 @@ export async function extractIntent(
           errors: validationResult.error.issues,
           raw_input: toolUseBlock.input,
         },
-        'Intent validation failed'
+        "Intent validation failed",
       );
       throw new IntentExtractionError(
-        'Invalid intent structure from Claude',
-        validationResult.error
+        "Invalid intent structure from Claude",
+        validationResult.error,
       );
     }
 
@@ -223,7 +231,7 @@ export async function extractIntent(
         confidence: intent.confidence,
         has_clarification: !!intent.clarification_needed,
       },
-      'Intent extracted successfully'
+      "Intent extracted successfully",
     );
 
     return intent;
@@ -232,10 +240,7 @@ export async function extractIntent(
       throw error;
     }
 
-    logger.error({ error }, 'Failed to extract intent from message');
-    throw new IntentExtractionError(
-      'Intent extraction failed',
-      error as Error
-    );
+    logger.error({ error }, "Failed to extract intent from message");
+    throw new IntentExtractionError("Intent extraction failed", error as Error);
   }
 }
