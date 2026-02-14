@@ -9,31 +9,32 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation & Signal Infrastructure) — COMPLETE
-Plan: 3 of 3 in current phase — all verified
-Status: Phase 1 complete, Phase 2 ready to plan
-Last activity: 2026-02-14 — Phase 1 verified end-to-end (Signal send/receive + Claude LLM working)
+Phase: 2 of 4 (Calendar Integration & CRUD) — IN PROGRESS
+Plan: 1 of 2 in current phase — executing
+Status: Phase 2 Plan 1 complete
+Last activity: 2026-02-14 — Plan 02-01 complete (Calendar foundation with CRUD operations)
 
-Progress: [██████████] 100% (Phase 1)
+Progress: [█████▓░░░░] 30% (Phase 1 complete, Phase 2 Plan 1 complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 4 min
-- Total execution time: 0.2 hours
+- Total execution time: 0.27 hours
 
 **By Phase:**
 
 | Phase | Plans | Total  | Avg/Plan |
 | ----- | ----- | ------ | -------- |
 | 1     | 3     | 12 min | 4 min    |
+| 2     | 1     | 4 min  | 4 min    |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-01 (5 min), 01-02 (2 min), 01-03 (5 min)
-- Trend: Phase 1 complete and verified
+- Last 5 plans: 01-01 (5 min), 01-02 (2 min), 01-03 (5 min), 02-01 (4 min)
+- Trend: Consistent 4-minute average execution time
 
 _Updated after each plan completion_
 
@@ -66,6 +67,11 @@ Recent decisions affecting current work:
 - Use system signal-cli (brew) path instead of bundled binary — verification
 - Set Anthropic baseURL explicitly to avoid ANTHROPIC_BASE_URL env var (Portkey proxy) — verification
 - Docker PostgreSQL on port 5433 to avoid conflict with local PostgreSQL — verification
+- IANA timezone identifiers (Europe/Berlin) for DST-safe Google Calendar handling — 02-01
+- Default event duration: 1 hour when no end time specified — 02-01
+- Date inference: assume today if time hasn't passed, tomorrow if passed — 02-01
+- Event search disambiguation: return single/multiple/not found for LLM processing — 02-01
+- Retry configuration: 3 max attempts on 429 and 5xx errors for Calendar API — 02-01
 
 ### Pending Todos
 
@@ -84,10 +90,16 @@ None yet.
 - ✅ Entry point, idempotency migration, WhatsApp cleanup (01-03)
 - ✅ End-to-end verified: receive Signal message → Claude intent extraction → send response
 
+**Phase 2: IN PROGRESS**
+
+- ✅ Calendar foundation with CRUD operations (02-01)
+- 🔄 Next: Calendar pipeline integration (02-02)
+
 **Phase 2 Considerations:**
 
-- Timezone handling must use explicit IANA timezones to prevent calendar chaos
-- Google Calendar quota attribution requires quotaUser parameter per family member
+- ✅ Timezone handling uses explicit IANA timezones (Europe/Berlin) — implemented in 02-01
+- Google Calendar quota attribution requires quotaUser parameter per family member — deferred to Phase 3
+- Service account requires manual setup (Google Cloud project, calendar sharing) — user action needed
 
 **Phase 3 Considerations:**
 
@@ -96,10 +108,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Phase 1 complete and verified. Ready for Phase 2 planning.
+Stopped at: Completed 02-01-PLAN.md (Calendar foundation with CRUD operations)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-14 — Phase 1 verified, ready for Phase 2_
+_Last updated: 2026-02-14 — Plan 02-01 complete (Calendar CRUD foundation)_
