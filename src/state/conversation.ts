@@ -2,10 +2,10 @@
  * PostgreSQL-backed Conversation State Management
  */
 
-import type { Pool } from 'pg';
-import { logger } from '../utils/logger.js';
-import { MAX_HISTORY_MESSAGES } from '../config/constants.js';
-import { ConversationState, MessageHistoryEntry } from './types.js';
+import type { Pool } from "pg";
+import { logger } from "../utils/logger.js";
+import { MAX_HISTORY_MESSAGES } from "../config/constants.js";
+import { ConversationState, MessageHistoryEntry } from "./types.js";
 
 /**
  * Conversation store for managing persistent conversation state
@@ -26,18 +26,18 @@ export class ConversationStore {
    * @returns ConversationState or null if expired/nonexistent
    */
   async getState(phoneNumber: string): Promise<ConversationState | null> {
-    logger.debug({ phoneNumber }, 'Fetching conversation state');
+    logger.debug({ phoneNumber }, "Fetching conversation state");
 
     const result = await this.pool.query(
       `SELECT phone_number, current_intent, pending_entities, message_history, last_message_at
        FROM conversations
        WHERE phone_number = $1
          AND last_message_at > NOW() - INTERVAL '30 minutes'`,
-      [phoneNumber]
+      [phoneNumber],
     );
 
     if (result.rows.length === 0) {
-      logger.debug({ phoneNumber }, 'No active conversation found');
+      logger.debug({ phoneNumber }, "No active conversation found");
       return null;
     }
 
@@ -57,7 +57,7 @@ export class ConversationStore {
         currentIntent: state.currentIntent,
         historyCount: state.messageHistory.length,
       },
-      'Conversation state retrieved'
+      "Conversation state retrieved",
     );
 
     return state;
@@ -77,7 +77,7 @@ export class ConversationStore {
         phoneNumber: state.phoneNumber,
         currentIntent: state.currentIntent,
       },
-      'Saving conversation state'
+      "Saving conversation state",
     );
 
     await this.pool.query(
@@ -94,10 +94,13 @@ export class ConversationStore {
         state.currentIntent,
         JSON.stringify(state.pendingEntities),
         JSON.stringify(state.messageHistory),
-      ]
+      ],
     );
 
-    logger.debug({ phoneNumber: state.phoneNumber }, 'Conversation state saved');
+    logger.debug(
+      { phoneNumber: state.phoneNumber },
+      "Conversation state saved",
+    );
   }
 
   /**
@@ -109,14 +112,13 @@ export class ConversationStore {
    * @param phoneNumber - Phone number in E.164 format
    */
   async clearState(phoneNumber: string): Promise<void> {
-    logger.debug({ phoneNumber }, 'Clearing conversation state');
+    logger.debug({ phoneNumber }, "Clearing conversation state");
 
-    await this.pool.query(
-      `DELETE FROM conversations WHERE phone_number = $1`,
-      [phoneNumber]
-    );
+    await this.pool.query(`DELETE FROM conversations WHERE phone_number = $1`, [
+      phoneNumber,
+    ]);
 
-    logger.debug({ phoneNumber }, 'Conversation state cleared');
+    logger.debug({ phoneNumber }, "Conversation state cleared");
   }
 
   /**
@@ -131,10 +133,10 @@ export class ConversationStore {
    */
   async addToHistory(
     phoneNumber: string,
-    role: 'user' | 'assistant',
-    content: string
+    role: "user" | "assistant",
+    content: string,
   ): Promise<void> {
-    logger.debug({ phoneNumber, role }, 'Adding message to history');
+    logger.debug({ phoneNumber, role }, "Adding message to history");
 
     // Get current state
     const state = await this.getState(phoneNumber);
@@ -158,7 +160,7 @@ export class ConversationStore {
         after: trimmedHistory.length,
         trimmed: updatedHistory.length - trimmedHistory.length,
       },
-      'Message history trimmed'
+      "Message history trimmed",
     );
 
     // Save updated state
@@ -172,7 +174,7 @@ export class ConversationStore {
 
     logger.debug(
       { phoneNumber, historyCount: trimmedHistory.length },
-      'Message added to history'
+      "Message added to history",
     );
   }
 }

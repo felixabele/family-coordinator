@@ -106,15 +106,15 @@ Add assistant response to history
 
 ## Intent Handling (Phase 1)
 
-| Intent Type | Response |
-|-------------|----------|
-| `greeting` | Welcome message introducing the bot |
-| `help` | List of supported commands |
+| Intent Type    | Response                                                        |
+| -------------- | --------------------------------------------------------------- |
+| `greeting`     | Welcome message introducing the bot                             |
+| `help`         | List of supported commands                                      |
 | `create_event` | Stub: "Calendar integration coming in Phase 2" + entity summary |
 | `query_events` | Stub: "Calendar integration coming in Phase 2" + entity summary |
 | `update_event` | Stub: "Calendar integration coming in Phase 2" + entity summary |
 | `delete_event` | Stub: "Calendar integration coming in Phase 2" + entity summary |
-| `unclear` | Uses LLM's `clarification_needed` or generic unclear message |
+| `unclear`      | Uses LLM's `clarification_needed` or generic unclear message    |
 
 **Why stubs?** Phase 1 validates the full pipeline (Signal ↔ LLM ↔ State) without requiring Google Calendar integration. Users can test that the bot understands their requests. Phase 2 will replace stubs with actual calendar operations.
 
@@ -221,6 +221,7 @@ import { sendSignalMessage } from './sender.js';
 ## What's Next
 
 **Phase 1 Plan 3** will create the daemon (`src/daemon.ts` or `src/main.ts`) that:
+
 - Initializes all dependencies (SignalClient, Anthropic, DB pool, stores)
 - Calls `setupMessageListener()` to activate the message handler
 - Connects the SignalClient and starts listening for messages

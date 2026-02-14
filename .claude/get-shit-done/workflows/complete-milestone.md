@@ -44,6 +44,7 @@ ROADMAP=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs roadmap analyze)
 ```
 
 This returns all phases with plan/summary counts and disk status. Use this to verify:
+
 - Which phases belong to this milestone?
 - All phases complete (all plans have summaries)? Check `disk_status === 'complete'` for each.
 - `progress_percent` should be 100%.
@@ -90,6 +91,7 @@ Ready to mark this milestone as shipped?
 ```
 
 Wait for confirmation.
+
 - "adjust scope": Ask which phases to include.
 - "wait": Stop, user returns when ready.
 
@@ -209,7 +211,8 @@ Update PROJECT.md inline. Update "Last updated" footer:
 
 ```markdown
 ---
-*Last updated: [date] after v[X.Y] milestone*
+
+_Last updated: [date] after v[X.Y] milestone_
 ```
 
 **Example full evolution (v1.0 → v1.1 prep):**
@@ -348,6 +351,7 @@ ARCHIVE=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs milestone complete "v[X
 ```
 
 The CLI handles:
+
 - Creating `.planning/milestones/` directory
 - Archiving ROADMAP.md to `milestones/v[X.Y]-ROADMAP.md`
 - Archiving REQUIREMENTS.md to `milestones/v[X.Y]-REQUIREMENTS.md` with archive header
@@ -362,6 +366,7 @@ Verify: `✅ Milestone archived to .planning/milestones/`
 **Note:** Phase directories (`.planning/phases/`) are NOT deleted — they accumulate across milestones as raw execution history. Phase numbering continues (v1.0 phases 1-4, v1.1 phases 5-8, etc.).
 
 After archival, the AI still handles:
+
 - Reorganizing ROADMAP.md with milestone grouping (requires judgment)
 - Full PROJECT.md evolution review (requires understanding)
 - Deleting original ROADMAP.md and REQUIREMENTS.md
@@ -419,6 +424,7 @@ See: .planning/PROJECT.md (updated [today])
 ```
 
 **Accumulated Context:**
+
 - Clear decisions summary (full log in PROJECT.md)
 - Clear resolved blockers
 - Keep open blockers for next milestone
@@ -551,6 +557,7 @@ Confirm: "Tagged: v[X.Y]"
 Ask: "Push tag to remote? (y/n)"
 
 If yes:
+
 ```bash
 git push origin v[X.Y]
 ```
@@ -564,6 +571,7 @@ Commit milestone completion.
 ```bash
 node ./.claude/get-shit-done/bin/gsd-tools.cjs commit "chore: complete v[X.Y] milestone" --files .planning/milestones/v[X.Y]-ROADMAP.md .planning/milestones/v[X.Y]-REQUIREMENTS.md .planning/milestones/v[X.Y]-MILESTONE-AUDIT.md .planning/MILESTONES.md .planning/PROJECT.md .planning/STATE.md
 ```
+
 ```
 
 Confirm: "Committed: chore: complete v[X.Y] milestone"
@@ -573,13 +581,16 @@ Confirm: "Committed: chore: complete v[X.Y] milestone"
 <step name="offer_next">
 
 ```
+
 ✅ Milestone v[X.Y] [Name] complete
 
 Shipped:
+
 - [N] phases ([M] plans, [P] tasks)
 - [One sentence of what shipped]
 
 Archived:
+
 - milestones/v[X.Y]-ROADMAP.md
 - milestones/v[X.Y]-REQUIREMENTS.md
 
@@ -597,6 +608,7 @@ Tag: v[X.Y]
 <sub>`/clear` first → fresh context window</sub>
 
 ---
+
 ```
 
 </step>
@@ -642,3 +654,4 @@ Milestone completion is successful when:
 - [ ] User knows next step (/gsd:new-milestone)
 
 </success_criteria>
+```

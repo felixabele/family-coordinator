@@ -4,9 +4,9 @@
  * Provides a simple interface for sending Signal messages with error handling and logging.
  */
 
-import type { SignalClient } from './client.js';
-import { SignalSendError } from '../utils/errors.js';
-import { logger } from '../utils/logger.js';
+import type { SignalClient } from "./client.js";
+import { SignalSendError } from "../utils/errors.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * Send a text message via Signal
@@ -22,12 +22,12 @@ import { logger } from '../utils/logger.js';
 export async function sendSignalMessage(
   client: SignalClient,
   recipient: string,
-  text: string
+  text: string,
 ): Promise<void> {
   try {
     logger.debug(
       { recipient, textLength: text.length },
-      'Sending Signal message'
+      "Sending Signal message",
     );
 
     // Call signal-sdk's sendMessage method
@@ -36,7 +36,7 @@ export async function sendSignalMessage(
 
     logger.info(
       { recipient, textLength: text.length },
-      'Signal message sent successfully'
+      "Signal message sent successfully",
     );
   } catch (error) {
     logger.error(
@@ -45,11 +45,11 @@ export async function sendSignalMessage(
         recipient,
         textLength: text.length,
       },
-      'Failed to send Signal message'
+      "Failed to send Signal message",
     );
 
     const errorMessage =
-      error instanceof Error ? error.message : 'Unknown error';
+      error instanceof Error ? error.message : "Unknown error";
     throw new SignalSendError(`Failed to send message: ${errorMessage}`);
   }
 }

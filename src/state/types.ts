@@ -6,7 +6,7 @@
  * Message history entry for conversation context
  */
 export interface MessageHistoryEntry {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 

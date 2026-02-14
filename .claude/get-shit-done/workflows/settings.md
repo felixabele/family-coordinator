@@ -25,12 +25,13 @@ cat .planning/config.json
 ```
 
 Parse current values (default to `true` if not present):
+
 - `workflow.research` — spawn researcher during plan-phase
 - `workflow.plan_check` — spawn plan checker during plan-phase
 - `workflow.verifier` — spawn verifier during execute-phase
 - `model_profile` — which model each agent uses (default: `balanced`)
 - `git.branching_strategy` — branching approach (default: `"none"`)
-</step>
+  </step>
 
 <step name="present_settings">
 Use AskUserQuestion with current values pre-selected:
@@ -86,6 +87,7 @@ AskUserQuestion([
   }
 ])
 ```
+
 </step>
 
 <step name="update_config">
@@ -133,13 +135,15 @@ Quick commands:
 - /gsd:plan-phase --skip-research — skip research
 - /gsd:plan-phase --skip-verify — skip plan check
 ```
+
 </step>
 
 </process>
 
 <success_criteria>
+
 - [ ] Current config read
 - [ ] User presented with 5 settings (profile + 3 workflow toggles + git branching)
 - [ ] Config updated with model_profile, workflow, and git sections
 - [ ] Changes confirmed to user
-</success_criteria>
+      </success_criteria>

@@ -4,7 +4,7 @@
  * Prevents duplicate processing when Signal retries message delivery
  */
 
-import type { Pool } from 'pg';
+import type { Pool } from "pg";
 
 /**
  * Idempotency store for tracking processed Signal messages
@@ -25,8 +25,8 @@ export class IdempotencyStore {
    */
   async isProcessed(messageId: string): Promise<boolean> {
     const result = await this.pool.query(
-      'SELECT 1 FROM processed_messages WHERE message_id = $1',
-      [messageId]
+      "SELECT 1 FROM processed_messages WHERE message_id = $1",
+      [messageId],
     );
     return result.rows.length > 0;
   }
@@ -38,8 +38,8 @@ export class IdempotencyStore {
    */
   async markProcessed(messageId: string): Promise<void> {
     await this.pool.query(
-      'INSERT INTO processed_messages (message_id) VALUES ($1) ON CONFLICT (message_id) DO NOTHING',
-      [messageId]
+      "INSERT INTO processed_messages (message_id) VALUES ($1) ON CONFLICT (message_id) DO NOTHING",
+      [messageId],
     );
   }
 
@@ -51,7 +51,7 @@ export class IdempotencyStore {
    */
   async cleanup(): Promise<void> {
     const result = await this.pool.query(
-      "DELETE FROM processed_messages WHERE processed_at < NOW() - INTERVAL '7 days'"
+      "DELETE FROM processed_messages WHERE processed_at < NOW() - INTERVAL '7 days'",
     );
     const deletedCount = result.rowCount || 0;
     if (deletedCount > 0) {

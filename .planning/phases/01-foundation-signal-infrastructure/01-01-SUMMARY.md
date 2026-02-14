@@ -18,7 +18,12 @@ affects: [02-signal-listener, 03-message-processing]
 # Tech tracking
 tech-stack:
   added: [signal-sdk]
-  patterns: [E.164 phone number validation, retry with exponential backoff, rate limiting]
+  patterns:
+    [
+      E.164 phone number validation,
+      retry with exponential backoff,
+      rate limiting,
+    ]
 
 key-files:
   created:
@@ -60,6 +65,7 @@ completed: 2026-02-13
 - **Files modified:** 7
 
 ## Accomplishments
+
 - Migrated from WhatsApp Business API to Signal messaging infrastructure
 - Created typed Signal client wrapper with retry and rate limiting
 - Established E.164 phone number validation pattern
@@ -73,6 +79,7 @@ Each task was committed atomically:
 2. **Task 2: Create Signal types and client wrapper** - `beea25e` (feat)
 
 ## Files Created/Modified
+
 - `package.json` - Replaced WhatsApp/BullMQ/Fastify dependencies with signal-sdk
 - `src/config/env.ts` - SIGNAL_PHONE_NUMBER validation (E.164 format), removed WhatsApp/Redis/PORT vars
 - `src/config/constants.ts` - Signal retry and rate limiting constants, removed WhatsApp/queue constants
@@ -81,6 +88,7 @@ Each task was committed atomically:
 - `src/signal/client.ts` - createSignalClient factory with configuration
 
 ## Decisions Made
+
 - **signal-sdk source:** Installed from GitHub (benoitpetit/signal-sdk) as it's the most actively maintained Signal TypeScript SDK
 - **E.164 validation:** Used regex pattern `^\+[1-9]\d{1,14}$` in Zod schema for strict phone number format
 - **Retry strategy:** Exponential backoff (2x multiplier) with 3 max attempts, 1s initial delay, 10s max delay
@@ -102,16 +110,19 @@ None - plan executed exactly as written.
 **External services require manual configuration.** The plan includes `user_setup` section indicating:
 
 ### Environment Variables to Add
+
 ```bash
 SIGNAL_PHONE_NUMBER="+12025551234"  # Your dedicated Signal phone number in E.164 format
 ```
 
 ### Dashboard Configuration Steps
+
 1. Register phone number with signal-cli (one-time setup)
 2. Complete CAPTCHA verification at https://signalcaptchas.org/registration/generate.html
 3. Run: `signal-cli register` command
 
 ### Verification Command
+
 ```bash
 signal-cli -u $SIGNAL_PHONE_NUMBER receive
 ```
@@ -123,6 +134,7 @@ signal-cli -u $SIGNAL_PHONE_NUMBER receive
 **Blockers:** None - signal-sdk installed successfully from GitHub.
 
 **Considerations:**
+
 - signal-cli daemon must be running before Plans 02-03 can be tested
 - Device linking may require interactive QR code scanning during first connection
 - TypeScript definitions for signal-sdk may need refinement during actual usage
@@ -130,6 +142,7 @@ signal-cli -u $SIGNAL_PHONE_NUMBER receive
 ## Self-Check: PASSED
 
 All claims verified:
+
 - ✓ Created files exist: src/signal/types.ts, src/signal/client.ts
 - ✓ Modified files exist: package.json, src/config/env.ts, src/config/constants.ts, src/utils/errors.ts
 - ✓ Commits exist: 6ea65ec (Task 1), beea25e (Task 2)
@@ -138,5 +151,6 @@ All claims verified:
 - ✓ All TypeScript files compile successfully in isolation
 
 ---
-*Phase: 01-foundation-signal-infrastructure*
-*Completed: 2026-02-13*
+
+_Phase: 01-foundation-signal-infrastructure_
+_Completed: 2026-02-13_

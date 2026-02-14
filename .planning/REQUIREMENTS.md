@@ -31,6 +31,12 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **INF-05**: Bot is always-on (cloud-hosted, listens for messages 24/7)
 - [ ] **INF-06**: Bot processes messages reliably without duplicates
 
+### Quality
+
+- [ ] **QA-01**: Unit tests cover core business logic (intent extraction, conversation state, message processing)
+- [ ] **QA-02**: Integration tests verify end-to-end message pipeline with mocked external services (Signal, Claude)
+- [ ] **QA-03**: Tests run in CI and must pass before deployment
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -46,43 +52,48 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ## Out of Scope
 
-| Feature | Reason |
-|---------|--------|
-| Multiple calendar support | One shared family calendar is v1 scope — validate single calendar first |
-| Voice message input | Text-only natural language; voice adds transcription complexity |
-| AI-suggested scheduling | Complex negotiation logic; users specify times directly |
-| Event analytics/reporting | Not core to calendar coordination |
-| Calendar sync across platforms | Google Calendar only; other platforms are separate products |
-| Mobile app | Signal is the interface |
-| User permissions/roles | All family members have equal CRUD access to shared calendar |
+| Feature                        | Reason                                                                  |
+| ------------------------------ | ----------------------------------------------------------------------- |
+| Multiple calendar support      | One shared family calendar is v1 scope — validate single calendar first |
+| Voice message input            | Text-only natural language; voice adds transcription complexity         |
+| AI-suggested scheduling        | Complex negotiation logic; users specify times directly                 |
+| Event analytics/reporting      | Not core to calendar coordination                                       |
+| Calendar sync across platforms | Google Calendar only; other platforms are separate products             |
+| Mobile app                     | Signal is the interface                                                 |
+| User permissions/roles         | All family members have equal CRUD access to shared calendar            |
 
 ## Traceability
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| CAL-01 | Phase 2 | Pending |
-| CAL-02 | Phase 2 | Pending |
-| CAL-03 | Phase 2 | Pending |
-| CAL-04 | Phase 2 | Pending |
-| CAL-05 | Phase 2 | Pending |
-| CAL-06 | Phase 2 | Pending |
-| INT-01 | Phase 1 | Pending |
-| INT-02 | Phase 2 | Pending |
-| INT-03 | Phase 2 | Pending |
-| INF-01 | Phase 1 | Pending |
-| INF-02 | Phase 1 | Pending |
-| INF-03 | Phase 2 | Pending |
-| INF-04 | Phase 3 | Pending |
-| INF-05 | Phase 1 | Pending |
-| INF-06 | Phase 1 | Pending |
+| Requirement | Phase      | Status  |
+| ----------- | ---------- | ------- |
+| CAL-01      | Phase 2    | Pending |
+| CAL-02      | Phase 2    | Pending |
+| CAL-03      | Phase 2    | Pending |
+| CAL-04      | Phase 2    | Pending |
+| CAL-05      | Phase 2    | Pending |
+| CAL-06      | Phase 2    | Pending |
+| INT-01      | Phase 1    | Pending |
+| INT-02      | Phase 2    | Pending |
+| INT-03      | Phase 2    | Pending |
+| INF-01      | Phase 1    | Pending |
+| INF-02      | Phase 1    | Pending |
+| INF-03      | Phase 2    | Pending |
+| INF-04      | Phase 3    | Pending |
+| INF-05      | Phase 1    | Pending |
+| INF-06      | Phase 1    | Pending |
+| QA-01       | Each phase | Pending |
+| QA-02       | Each phase | Pending |
+| QA-03       | Phase 1    | Pending |
 
 **Coverage:**
-- v1 requirements: 15 total
-- Mapped to phases: 15
+
+- v1 requirements: 18 total
+- Mapped to phases: 18
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2026-02-13*
-*Last updated: 2026-02-13 after roadmap creation*
+
+_Requirements defined: 2026-02-13_
+_Last updated: 2026-02-13 after roadmap creation_

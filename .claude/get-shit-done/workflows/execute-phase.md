@@ -34,6 +34,7 @@ Check `branching_strategy` from init:
 **"none":** Skip, continue on current branch.
 
 **"phase" or "milestone":** Use pre-computed `branch_name` from init:
+
 ```bash
 git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
 ```
@@ -59,6 +60,7 @@ Parse JSON for: `phase`, `plans[]` (each with `id`, `wave`, `autonomous`, `objec
 **Filtering:** Skip plans where `has_summary: true`. If `--gaps-only`: also skip non-gap_closure plans. If all filtered: "No matching incomplete plans" → exit.
 
 Report:
+
 ```
 ## Execution Plan
 
@@ -69,6 +71,7 @@ Report:
 | 1 | 01-01, 01-02 | {from plan objectives, 3-8 words} |
 | 2 | 01-03 | ... |
 ```
+
 </step>
 
 <step name="execute_waves">
@@ -145,6 +148,7 @@ Execute each wave in sequence. Within a wave: parallel if `PARALLELIZATION=true`
    If ANY spot-check fails: report which plan failed, route to failure handler — ask "Retry plan?" or "Continue with remaining waves?"
 
    If pass:
+
    ```
    ---
    ## Wave {N} Complete
@@ -169,7 +173,7 @@ Execute each wave in sequence. Within a wave: parallel if `PARALLELIZATION=true`
 6. **Execute checkpoint plans between waves** — see `<checkpoint_handling>`.
 
 7. **Proceed to next wave.**
-</step>
+   </step>
 
 <step name="checkpoint_handling">
 Plans with `autonomous: false` require user interaction.
@@ -180,6 +184,7 @@ Plans with `autonomous: false` require user interaction.
 2. Agent runs until checkpoint task or auth gate → returns structured state
 3. Agent return includes: completed tasks table, current task + blocker, checkpoint type/details, what's awaited
 4. **Present to user:**
+
    ```
    ## Checkpoint: [Type]
 
@@ -189,6 +194,7 @@ Plans with `autonomous: false` require user interaction.
    [Checkpoint Details from agent return]
    [Awaiting section from agent return]
    ```
+
 5. User responds: "approved"/"done" | issue description | decision selection
 6. **Spawn continuation agent (NOT resume)** using continuation-prompt.md template:
    - `{completed_tasks_table}`: From checkpoint return
@@ -211,19 +217,22 @@ After all waves:
 
 **Waves:** {N} | **Plans:** {M}/{total} complete
 
-| Wave | Plans | Status |
-|------|-------|--------|
-| 1 | plan-01, plan-02 | ✓ Complete |
-| CP | plan-03 | ✓ Verified |
-| 2 | plan-04 | ✓ Complete |
+| Wave | Plans            | Status     |
+| ---- | ---------------- | ---------- |
+| 1    | plan-01, plan-02 | ✓ Complete |
+| CP   | plan-03          | ✓ Verified |
+| 2    | plan-04          | ✓ Complete |
 
 ### Plan Details
+
 1. **03-01**: [one-liner from SUMMARY.md]
 2. **03-02**: [one-liner from SUMMARY.md]
 
 ### Issues Encountered
+
 [Aggregate from SUMMARYs, or "None"]
 ```
+
 </step>
 
 <step name="verify_phase_goal">
@@ -241,17 +250,19 @@ Check must_haves against actual codebase. Create VERIFICATION.md.",
 ```
 
 Read status:
+
 ```bash
 grep "^status:" "$PHASE_DIR"/*-VERIFICATION.md | cut -d: -f2 | tr -d ' '
 ```
 
-| Status | Action |
-|--------|--------|
-| `passed` | → update_roadmap |
-| `human_needed` | Present items for human testing, get approval or feedback |
-| `gaps_found` | Present gap summary, offer `/gsd:plan-phase {phase} --gaps` |
+| Status         | Action                                                      |
+| -------------- | ----------------------------------------------------------- |
+| `passed`       | → update_roadmap                                            |
+| `human_needed` | Present items for human testing, get approval or feedback   |
+| `gaps_found`   | Present gap summary, offer `/gsd:plan-phase {phase} --gaps` |
 
 **If human_needed:**
+
 ```
 ## ✓ Phase {X}: {Name} — Human Verification Required
 
@@ -263,6 +274,7 @@ All automated checks passed. {N} items need human testing:
 ```
 
 **If gaps_found:**
+
 ```
 ## ⚠ Phase {X}: {Name} — Gaps Found
 
@@ -292,11 +304,13 @@ Mark phase complete in ROADMAP.md (date, status).
 ```bash
 node ./.claude/get-shit-done/bin/gsd-tools.cjs commit "docs(phase-{X}): complete phase execution" --files .planning/ROADMAP.md .planning/STATE.md .planning/phases/{phase_dir}/*-VERIFICATION.md .planning/REQUIREMENTS.md
 ```
+
 </step>
 
 <step name="offer_next">
 
 **If more phases:**
+
 ```
 ## Next Up
 
@@ -308,6 +322,7 @@ node ./.claude/get-shit-done/bin/gsd-tools.cjs commit "docs(phase-{X}): complete
 ```
 
 **If milestone complete:**
+
 ```
 MILESTONE COMPLETE!
 
@@ -315,6 +330,7 @@ All {N} phases executed.
 
 `/gsd:complete-milestone`
 ```
+
 </step>
 
 </process>
@@ -324,12 +340,13 @@ Orchestrator: ~10-15% context. Subagents: fresh 200k each. No polling (Task bloc
 </context_efficiency>
 
 <failure_handling>
+
 - **classifyHandoffIfNeeded false failure:** Agent reports "failed" but error is `classifyHandoffIfNeeded is not defined` → Claude Code bug, not GSD. Spot-check (SUMMARY exists, commits present) → if pass, treat as success
 - **Agent fails mid-plan:** Missing SUMMARY.md → report, ask user how to proceed
 - **Dependency chain breaks:** Wave 1 fails → Wave 2 dependents likely fail → user chooses attempt or skip
 - **All agents in wave fail:** Systemic issue → stop, report for investigation
 - **Checkpoint unresolvable:** "Skip this plan?" or "Abort phase execution?" → record partial progress in STATE.md
-</failure_handling>
+  </failure_handling>
 
 <resumption>
 Re-run `/gsd:execute-phase {phase}` → discover_plans finds completed SUMMARYs → skips them → resumes from first incomplete plan → continues wave execution.

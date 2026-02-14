@@ -25,11 +25,13 @@ fi
 ```
 
 Parse output:
+
 - If last line is "LOCAL": installed version is first line, use `--local` flag for update
 - If last line is "GLOBAL": installed version is first line, use `--global` flag for update
 - If "UNKNOWN": proceed to install step (treat as version 0.0.0)
 
 **If VERSION file missing:**
+
 ```
 ## GSD Update
 
@@ -51,6 +53,7 @@ npm view get-shit-done-cc version 2>/dev/null
 ```
 
 **If npm check fails:**
+
 ```
 Couldn't check for updates (offline or npm unavailable).
 
@@ -64,6 +67,7 @@ Exit.
 Compare installed vs latest:
 
 **If installed == latest:**
+
 ```
 ## GSD Update
 
@@ -76,6 +80,7 @@ You're already on the latest version.
 Exit.
 
 **If installed > latest:**
+
 ```
 ## GSD Update
 
@@ -133,6 +138,7 @@ If you've modified any GSD files directly, they'll be automatically backed up to
 ```
 
 Use AskUserQuestion:
+
 - Question: "Proceed with update?"
 - Options:
   - "Yes, update now"
@@ -145,11 +151,13 @@ Use AskUserQuestion:
 Run the update using the install type detected in step 1:
 
 **If LOCAL install:**
+
 ```bash
 npx get-shit-done-cc --local
 ```
 
 **If GLOBAL install (or unknown):**
+
 ```bash
 npx get-shit-done-cc --global
 ```
@@ -159,14 +167,17 @@ Capture output. If install fails, show error and exit.
 Clear the update cache so statusline indicator disappears:
 
 **If LOCAL install:**
+
 ```bash
 rm -f ./.claude/cache/gsd-update-check.json
 ```
 
 **If GLOBAL install:**
+
 ```bash
 rm -f ./.claude/cache/gsd-update-check.json
 ```
+
 </step>
 
 <step name="display_result">
@@ -181,8 +192,8 @@ Format completion message (changelog was already shown in confirmation step):
 
 [View full changelog](https://github.com/glittercowboy/get-shit-done/blob/main/CHANGELOG.md)
 ```
-</step>
 
+</step>
 
 <step name="check_local_patches">
 After update completes, check if the installer detected and backed up any locally modified files:
@@ -201,6 +212,7 @@ Run /gsd:reapply-patches to merge your modifications into the new version.
 </process>
 
 <success_criteria>
+
 - [ ] Installed version read correctly
 - [ ] Latest version checked via npm
 - [ ] Update skipped if already current
@@ -209,4 +221,4 @@ Run /gsd:reapply-patches to merge your modifications into the new version.
 - [ ] User confirmation obtained
 - [ ] Update executed successfully
 - [ ] Restart reminder shown
-</success_criteria>
+      </success_criteria>

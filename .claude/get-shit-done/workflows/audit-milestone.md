@@ -17,6 +17,7 @@ INIT=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs init milestone-op)
 Extract from init JSON: `milestone_version`, `milestone_name`, `phase_count`, `completed_phases`, `commit_docs`.
 
 Resolve integration checker model:
+
 ```bash
 CHECKER_MODEL=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs resolve-model gsd-integration-checker --raw)
 ```
@@ -44,6 +45,7 @@ cat .planning/phases/02-*/*-VERIFICATION.md
 ```
 
 From each VERIFICATION.md, extract:
+
 - **Status:** passed | gaps_found
 - **Critical gaps:** (if any — these are blockers)
 - **Non-critical gaps:** tech debt, deferred items, warnings
@@ -73,12 +75,14 @@ Verify cross-phase wiring and E2E user flows.",
 ## 4. Collect Results
 
 Combine:
+
 - Phase-level gaps and tech debt (from step 2)
 - Integration checker's report (wiring gaps, broken flows)
 
 ## 5. Check Requirements Coverage
 
 For each requirement in REQUIREMENTS.md mapped to this milestone:
+
 - Find owning phase
 - Check phase verification status
 - Determine: satisfied | partial | unsatisfied
@@ -89,19 +93,19 @@ Create `.planning/v{version}-v{version}-MILESTONE-AUDIT.md` with:
 
 ```yaml
 ---
-milestone: {version}
-audited: {timestamp}
+milestone: { version }
+audited: { timestamp }
 status: passed | gaps_found | tech_debt
 scores:
   requirements: N/M
   phases: N/M
   integration: N/M
   flows: N/M
-gaps:  # Critical blockers
+gaps: # Critical blockers
   requirements: [...]
   integration: [...]
   flows: [...]
-tech_debt:  # Non-critical, deferred
+tech_debt: # Non-critical, deferred
   - phase: 01-auth
     items:
       - "TODO: add rate limiting"
@@ -115,6 +119,7 @@ tech_debt:  # Non-critical, deferred
 Plus full markdown report with tables for requirements, phases, integration, tech debt.
 
 **Status values:**
+
 - `passed` — all requirements met, no critical gaps, minimal tech debt
 - `gaps_found` — critical blockers exist
 - `tech_debt` — no blockers but accumulated deferred items need review
@@ -163,17 +168,20 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 ### Unsatisfied Requirements
 
 {For each unsatisfied requirement:}
+
 - **{REQ-ID}: {description}** (Phase {X})
   - {reason}
 
 ### Cross-Phase Issues
 
 {For each integration gap:}
+
 - **{from} → {to}:** {issue}
 
 ### Broken Flows
 
 {For each flow gap:}
+
 - **{flow name}:** breaks at {step}
 
 ───────────────────────────────────────────────────────────────
@@ -189,6 +197,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 ───────────────────────────────────────────────────────────────
 
 **Also available:**
+
 - cat .planning/v{version}-MILESTONE-AUDIT.md — see full report
 - /gsd:complete-milestone {version} — proceed anyway (accept tech debt)
 
@@ -209,6 +218,7 @@ All requirements met. No critical blockers. Accumulated tech debt needs review.
 
 {For each phase with debt:}
 **Phase {X}: {name}**
+
 - {item 1}
 - {item 2}
 
@@ -232,10 +242,11 @@ All requirements met. No critical blockers. Accumulated tech debt needs review.
 </offer_next>
 
 <success_criteria>
+
 - [ ] Milestone scope identified
 - [ ] All phase VERIFICATION.md files read
 - [ ] Tech debt and deferred gaps aggregated
 - [ ] Integration checker spawned for cross-phase wiring
 - [ ] v{version}-MILESTONE-AUDIT.md created
 - [ ] Results presented with actionable next steps
-</success_criteria>
+      </success_criteria>

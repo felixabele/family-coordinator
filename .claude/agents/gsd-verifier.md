@@ -124,17 +124,18 @@ ARTIFACT_RESULT=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs verify artifact
 Parse JSON result: `{ all_passed, passed, total, artifacts: [{path, exists, issues, passed}] }`
 
 For each artifact in result:
+
 - `exists=false` → MISSING
 - `issues` contains "Only N lines" or "Missing pattern" → STUB
 - `passed=true` → VERIFIED
 
 **Artifact status mapping:**
 
-| exists | issues empty | Status      |
-| ------ | ------------ | ----------- |
-| true   | true         | ✓ VERIFIED  |
-| true   | false        | ✗ STUB      |
-| false  | -            | ✗ MISSING   |
+| exists | issues empty | Status     |
+| ------ | ------------ | ---------- |
+| true   | true         | ✓ VERIFIED |
+| true   | false        | ✗ STUB     |
+| false  | -            | ✗ MISSING  |
 
 **For wiring verification (Level 3)**, check imports/usage manually for artifacts that pass Levels 1-2:
 
@@ -147,6 +148,7 @@ grep -r "$artifact_name" "${search_path:-src/}" --include="*.ts" --include="*.ts
 ```
 
 **Wiring status:**
+
 - WIRED: Imported AND used
 - ORPHANED: Exists but not imported/used
 - PARTIAL: Imported but not used (or vice versa)
@@ -173,6 +175,7 @@ LINKS_RESULT=$(node ./.claude/get-shit-done/bin/gsd-tools.cjs verify key-links "
 Parse JSON result: `{ all_verified, verified, total, links: [{from, to, via, verified, detail}] }`
 
 For each link:
+
 - `verified=true` → WIRED
 - `verified=false` with "not found" in detail → NOT_WIRED
 - `verified=false` with "Pattern not found" → PARTIAL
@@ -417,16 +420,22 @@ Return with:
 All must-haves verified. Phase goal achieved. Ready to proceed.
 
 {If gaps_found:}
+
 ### Gaps Found
+
 {N} gaps blocking goal achievement:
+
 1. **{Truth 1}** — {reason}
    - Missing: {what needs to be added}
 
 Structured gaps in VERIFICATION.md frontmatter for `/gsd:plan-phase --gaps`.
 
 {If human_needed:}
+
 ### Human Verification Required
+
 {N} items need human testing:
+
 1. **{Test name}** — {what to do}
    - Expected: {what should happen}
 
@@ -520,4 +529,4 @@ return <div>No messages</div>  // Always shows "no messages"
 - [ ] Re-verification metadata included (if previous existed)
 - [ ] VERIFICATION.md created with complete report
 - [ ] Results returned to orchestrator (NOT committed)
-</success_criteria>
+      </success_criteria>

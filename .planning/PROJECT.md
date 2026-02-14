@@ -50,14 +50,15 @@ Any family member can manage the shared calendar instantly through a Signal mess
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Signal messenger | User preference, privacy-focused, family already uses it | — Pending |
-| signal-cli for Signal access | Most mature community tool for programmatic Signal access | — Pending |
-| Single shared Google Calendar | Simpler architecture, family already uses one | — Pending |
-| Claude as LLM | User preference, strong natural language understanding | — Pending |
-| Cloud hosting | Must be always-on to listen for Signal messages | — Pending |
-| Calendar only (no reminders, no extras) | Keep v1 focused and shippable | — Pending |
+| Decision                                | Rationale                                                 | Outcome   |
+| --------------------------------------- | --------------------------------------------------------- | --------- |
+| Signal messenger                        | User preference, privacy-focused, family already uses it  | — Pending |
+| signal-cli for Signal access            | Most mature community tool for programmatic Signal access | — Pending |
+| Single shared Google Calendar           | Simpler architecture, family already uses one             | — Pending |
+| Claude as LLM                           | User preference, strong natural language understanding    | — Pending |
+| Cloud hosting                           | Must be always-on to listen for Signal messages           | — Pending |
+| Calendar only (no reminders, no extras) | Keep v1 focused and shippable                             | — Pending |
 
 ---
-*Last updated: 2026-02-13 after initialization*
+
+_Last updated: 2026-02-13 after initialization_

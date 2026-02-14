@@ -31,6 +31,7 @@ Extract from $ARGUMENTS: phase number (integer or decimal like `2.1`), flags (`-
 **If no phase number:** Detect next unplanned phase from roadmap.
 
 **If `phase_found` is false:** Validate phase exists in ROADMAP.md. If valid, create the directory using `phase_slug` and `padded_phase` from init:
+
 ```bash
 mkdir -p ".planning/phases/${padded_phase}-${phase_slug}"
 ```
@@ -62,6 +63,7 @@ If `context_content` is not null, display: `Using phase context from: ${PHASE_DI
 **If RESEARCH.md missing OR `--research` flag:**
 
 Display banner:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► RESEARCHING PHASE {X}
@@ -90,6 +92,7 @@ Answer: "What do I need to know to PLAN this phase well?"
 
 <phase_context>
 IMPORTANT: If CONTEXT.md exists below, it contains user decisions from /gsd:discuss-phase.
+
 - **Decisions** = Locked — research THESE deeply, no alternatives
 - **Claude's Discretion** = Freedom areas — research options, recommend
 - **Deferred Ideas** = Out of scope — ignore
@@ -148,6 +151,7 @@ CONTEXT_CONTENT=$(echo "$INIT" | jq -r '.context_content // empty')
 ## 8. Spawn gsd-planner Agent
 
 Display banner:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► PLANNING PHASE {X}
@@ -169,6 +173,7 @@ Planner prompt:
 
 **Phase Context:**
 IMPORTANT: If context exists below, it contains USER DECISIONS from /gsd:discuss-phase.
+
 - **Decisions** = LOCKED — honor exactly, do not revisit
 - **Claude's Discretion** = Freedom — make implementation choices
 - **Deferred Ideas** = Out of scope — do NOT include
@@ -181,20 +186,22 @@ IMPORTANT: If context exists below, it contains USER DECISIONS from /gsd:discuss
 
 <downstream_consumer>
 Output consumed by /gsd:execute-phase. Plans need:
+
 - Frontmatter (wave, depends_on, files_modified, autonomous)
 - Tasks in XML format
 - Verification criteria
 - must_haves for goal-backward verification
-</downstream_consumer>
+  </downstream_consumer>
 
 <quality_gate>
+
 - [ ] PLAN.md files created in phase directory
 - [ ] Each plan has valid frontmatter
 - [ ] Tasks are specific and actionable
 - [ ] Dependencies correctly identified
 - [ ] Waves assigned for parallel execution
 - [ ] must_haves derived from phase goal
-</quality_gate>
+      </quality_gate>
 ```
 
 ```
@@ -215,6 +222,7 @@ Task(
 ## 10. Spawn gsd-plan-checker Agent
 
 Display banner:
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  GSD ► VERIFYING PLANS
@@ -239,6 +247,7 @@ Checker prompt:
 
 **Phase Context:**
 IMPORTANT: Plans MUST honor user decisions. Flag as issue if plans contradict.
+
 - **Decisions** = LOCKED — plans must implement exactly
 - **Claude's Discretion** = Freedom areas — plans can choose approach
 - **Deferred Ideas** = Out of scope — plans must NOT include
@@ -247,9 +256,10 @@ IMPORTANT: Plans MUST honor user decisions. Flag as issue if plans contradict.
 </verification_context>
 
 <expected_output>
+
 - ## VERIFICATION PASSED — all checks pass
 - ## ISSUES FOUND — structured issue list
-</expected_output>
+  </expected_output>
 ```
 
 ```
@@ -327,15 +337,15 @@ Route to `<offer_next>`.
 Output this markdown directly (not as a code block):
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► PHASE {X} PLANNED ✓
+GSD ► PHASE {X} PLANNED ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 **Phase {X}: {Name}** — {N} plan(s) in {M} wave(s)
 
-| Wave | Plans | What it builds |
-|------|-------|----------------|
-| 1    | 01, 02 | [objectives] |
-| 2    | 03     | [objective]  |
+| Wave | Plans  | What it builds |
+| ---- | ------ | -------------- |
+| 1    | 01, 02 | [objectives]   |
+| 2    | 03     | [objective]    |
 
 Research: {Completed | Used existing | Skipped}
 Verification: {Passed | Passed with override | Skipped}
@@ -353,13 +363,15 @@ Verification: {Passed | Passed with override | Skipped}
 ───────────────────────────────────────────────────────────────
 
 **Also available:**
-- cat .planning/phases/{phase-dir}/*-PLAN.md — review plans
+
+- cat .planning/phases/{phase-dir}/\*-PLAN.md — review plans
 - /gsd:plan-phase {X} --research — re-research first
 
 ───────────────────────────────────────────────────────────────
 </offer_next>
 
 <success_criteria>
+
 - [ ] .planning/ directory validated
 - [ ] Phase validated against roadmap
 - [ ] Phase directory created if needed
@@ -373,4 +385,4 @@ Verification: {Passed | Passed with override | Skipped}
 - [ ] Verification passed OR user override OR max iterations with user decision
 - [ ] User sees status between agent spawns
 - [ ] User knows next steps
-</success_criteria>
+      </success_criteria>

@@ -57,6 +57,7 @@ mkdir -p "$QUICK_DIR"
 ```
 
 Report to user:
+
 ```
 Creating quick task ${next_num}: ${DESCRIPTION}
 Directory: ${QUICK_DIR}
@@ -103,6 +104,7 @@ Return: ## PLANNING COMPLETE with plan path
 ```
 
 After planner returns:
+
 1. Verify plan exists at `${QUICK_DIR}/${next_num}-PLAN.md`
 2. Extract plan count (typically 1 for quick tasks)
 3. Report: "Plan created: ${QUICK_DIR}/${next_num}-PLAN.md"
@@ -137,6 +139,7 @@ Project state: @.planning/STATE.md
 ```
 
 After executor returns:
+
 1. Verify summary exists at `${QUICK_DIR}/${next_num}-SUMMARY.md`
 2. Extract commit hash from executor output
 3. Report completion status
@@ -164,13 +167,14 @@ Insert after `### Blockers/Concerns` section:
 ```markdown
 ### Quick Tasks Completed
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
+| #   | Description | Date | Commit | Directory |
+| --- | ----------- | ---- | ------ | --------- |
 ```
 
 **7c. Append new row to table:**
 
 Use `date` from init:
+
 ```markdown
 | ${next_num} | ${DESCRIPTION} | ${date} | ${commit_hash} | [${next_num}-${slug}](./quick/${next_num}-${slug}/) |
 ```
@@ -178,6 +182,7 @@ Use `date` from init:
 **7d. Update "Last activity" line:**
 
 Use `date` from init:
+
 ```
 Last activity: ${date} - Completed quick task ${next_num}: ${DESCRIPTION}
 ```
@@ -195,11 +200,13 @@ node ./.claude/get-shit-done/bin/gsd-tools.cjs commit "docs(quick-${next_num}): 
 ```
 
 Get final commit hash:
+
 ```bash
 commit_hash=$(git rev-parse --short HEAD)
 ```
 
 Display completion output:
+
 ```
 ---
 
@@ -218,6 +225,7 @@ Ready for next task: /gsd:quick
 </process>
 
 <success_criteria>
+
 - [ ] ROADMAP.md validation passes
 - [ ] User provides task description
 - [ ] Slug generated (lowercase, hyphens, max 40 chars)
@@ -227,4 +235,4 @@ Ready for next task: /gsd:quick
 - [ ] `${next_num}-SUMMARY.md` created by executor
 - [ ] STATE.md updated with quick task row
 - [ ] Artifacts committed
-</success_criteria>
+      </success_criteria>
