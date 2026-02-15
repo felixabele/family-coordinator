@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Signal Infrastructure** - Signal messaging, conversation state, and Claude integration
 - [x] **Phase 2: Calendar Integration & CRUD** - Google Calendar connection with full create/read/update/delete operations
-- [ ] **Phase 3: Multi-User & Polish** - Multi-user coordination and UX improvements
+- [x] **Phase 3: Multi-User & Polish** - Multi-user coordination and UX improvements
 - [ ] **Phase 4: Advanced Features** - Event reminders, recurring events, and smart date parsing
 
 ## Phase Details
@@ -76,8 +76,8 @@ Plans:
 
 Plans:
 
-- [ ] 03-01-PLAN.md — Family member whitelist config module with Zod validation and libphonenumber-js
-- [ ] 03-02-PLAN.md — Wire access control, command detection, group chat support into message pipeline
+- [x] 03-01-PLAN.md — Family member whitelist config module with Zod validation and libphonenumber-js
+- [x] 03-02-PLAN.md — Wire access control, command detection, group chat support into message pipeline
 
 ### Phase 4: Advanced Features
 
@@ -105,10 +105,10 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | ------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
 | 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
-| 3. Multi-User & Polish                | 0/2            | Not started | -          |
+| 3. Multi-User & Polish                | 2/2            | Complete    | 2026-02-15 |
 | 4. Advanced Features                  | 0/TBD          | Not started | -          |
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-14 — Phase 2 complete and verified_
+_Last updated: 2026-02-15 — Phase 3 complete and verified_
