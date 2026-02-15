@@ -24,6 +24,7 @@
     "@anthropic-ai/sdk": "^0.74.0",
     "date-fns": "^4.1.0",
     "googleapis": "^171.4.0",
+    "libphonenumber-js": "^1.11.14",
     "luxon": "^3.7.2",
     "pg": "^8.18.0",
     "pino": "^10.3.1",
