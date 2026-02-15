@@ -13,3 +13,14 @@ export const SIGNAL_RATE_LIMIT_MS = 200; // minimum interval between Signal API 
 export const SIGNAL_RETRY_MAX_ATTEMPTS = 3;
 export const SIGNAL_RETRY_INITIAL_DELAY_MS = 1000;
 export const SIGNAL_RETRY_MAX_DELAY_MS = 10000;
+
+// Bot response texts
+export const HELP_TEXT = [
+  "Ich bin dein Familienkalender-Bot! Das kann ich für dich tun:",
+  "",
+  '📅 Termine anzeigen — z.B. "Was steht heute an?" oder "Termine diese Woche"',
+  '➕ Termine erstellen — z.B. "Zahnarzt am Montag um 10 Uhr"',
+  '❌ Termine löschen — z.B. "Lösche den Zahnarzt-Termin"',
+  "",
+  'Schreib "abbrechen" um neu zu starten.',
+].join("\n");

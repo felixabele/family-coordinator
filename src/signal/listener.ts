@@ -10,6 +10,7 @@ import type { SignalClient } from "./client.js";
 import type { SignalEnvelope } from "./types.js";
 import type { CalendarIntent } from "../llm/types.js";
 import type { CalendarClient } from "../calendar/client.js";
+import type { FamilyWhitelist } from "../config/family-members.js";
 import {
   CalendarEvent,
   CalendarError,
@@ -35,6 +36,7 @@ import { ConversationStore } from "../state/conversation.js";
 import { IdempotencyStore } from "../state/idempotency.js";
 import { extractIntent } from "../llm/intent.js";
 import { logger } from "../utils/logger.js";
+import { HELP_TEXT } from "../config/constants.js";
 
 /**
  * Dependencies for the message listener
@@ -45,6 +47,44 @@ export interface MessageListenerDeps {
   conversationStore: ConversationStore;
   idempotencyStore: IdempotencyStore;
   calendarClient: CalendarClient;
+  familyWhitelist: FamilyWhitelist;
+}
+
+/**
+ * Detect if message is a command (help/cancel)
+ *
+ * @param text - Message text to check
+ * @returns Command type or null if not a command
+ */
+function detectCommand(text: string): "help" | "cancel" | null {
+  const normalized = text.trim().toLowerCase();
+  if (["hilfe", "help", "?"].includes(normalized)) return "help";
+  if (["abbrechen", "cancel", "reset"].includes(normalized)) return "cancel";
+  return null;
+}
+
+/**
+ * Handle command execution (help/cancel)
+ *
+ * Commands always reset conversation state and don't invoke LLM.
+ *
+ * @param command - Command type
+ * @param phoneNumber - Sender phone number
+ * @param deps - Dependencies
+ */
+async function handleCommand(
+  command: "help" | "cancel",
+  phoneNumber: string,
+  deps: MessageListenerDeps,
+): Promise<void> {
+  // Always reset conversation state on any command
+  await deps.conversationStore.clearState(phoneNumber);
+
+  const response =
+    command === "help" ? HELP_TEXT : "Alles klar, was kann ich für dich tun?";
+
+  await sendSignalMessage(deps.signalClient, phoneNumber, response);
+  logger.info({ phoneNumber, command }, "Command executed, state reset");
 }
 
 /**
@@ -54,25 +94,25 @@ export interface MessageListenerDeps {
  *
  * @param intent - Extracted intent from LLM
  * @param deps - Dependencies including calendar client
+ * @param memberName - Family member name for personalization (optional)
  * @returns Response message text in German
  */
 async function handleIntent(
   intent: CalendarIntent,
   deps: MessageListenerDeps,
+  memberName?: string,
 ): Promise<string> {
   const tz = deps.calendarClient.timezone;
 
   try {
     switch (intent.intent) {
-      case "greeting":
-        return "Hey! Ich bin dein Familienkalender-Bot. Schreib mir einfach, was du wissen oder eintragen willst!";
+      case "greeting": {
+        const nameGreeting = memberName ? `Hey ${memberName}!` : "Hey!";
+        return `${nameGreeting} Ich bin dein Familienkalender-Bot. Schreib mir einfach, was du wissen oder eintragen willst!`;
+      }
 
       case "help":
-        return `Das kann ich für dich tun:
-- Termine anzeigen: "Was steht heute an?"
-- Termin eintragen: "Trag Fußball Dienstag um 16 Uhr ein"
-- Termin verschieben: "Verschieb den Zahnarzt auf Donnerstag"
-- Termin löschen: "Streich das Fußball diese Woche"`;
+        return HELP_TEXT;
 
       case "query_events": {
         // Use provided date or default to today
@@ -356,20 +396,24 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         "Received Signal message",
       );
 
-      // Skip if no text (media-only messages, typing indicators, sync messages)
-      if (!text) {
-        logger.debug({ messageId }, "Skipping message without text content");
+      // Access control - reject unknown senders
+      if (!deps.familyWhitelist.isAllowed(phoneNumber)) {
+        logger.warn({ phoneNumber }, "Message from unknown sender rejected");
+        await sendSignalMessage(
+          deps.signalClient,
+          phoneNumber,
+          "Entschuldigung, ich bin ein privater Familienbot und kann nur mit registrierten Familienmitgliedern kommunizieren.",
+        );
         return;
       }
 
-      // Skip group messages (Phase 1: direct messages only)
-      if (envelope.dataMessage?.groupInfo) {
-        logger.debug(
-          {
-            messageId,
-            groupId: envelope.dataMessage.groupInfo.groupId,
-          },
-          "Skipping group message (not supported in Phase 1)",
+      // Non-text message rejection
+      if (!text) {
+        logger.debug({ messageId, phoneNumber }, "Non-text message rejected");
+        await sendSignalMessage(
+          deps.signalClient,
+          phoneNumber,
+          "Ich kann leider nur Textnachrichten verarbeiten.",
         );
         return;
       }
@@ -394,6 +438,13 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         "Processing new Signal message",
       );
 
+      // Command detection - handle help/cancel before LLM
+      const command = detectCommand(text);
+      if (command) {
+        await handleCommand(command, phoneNumber, deps);
+        return;
+      }
+
       // Get conversation state
       const state = await deps.conversationStore.getState(phoneNumber);
 
@@ -417,8 +468,11 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         "Intent extracted successfully",
       );
 
+      // Get member name for personalization
+      const memberName = deps.familyWhitelist.getName(phoneNumber);
+
       // Handle intent with calendar operations
-      const response = await handleIntent(intent, deps);
+      const response = await handleIntent(intent, deps, memberName);
 
       // Send response via Signal
       await sendSignalMessage(deps.signalClient, phoneNumber, response);
