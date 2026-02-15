@@ -72,11 +72,12 @@ Plans:
 2. Bot identifies which family member sent each message
 3. User can reset stuck conversations with help/cancel commands
 4. Conversation context times out gracefully after 30 minutes of inactivity
-   **Plans**: TBD
+   **Plans**: 2 plans
 
 Plans:
 
-- [ ] (Plans will be created during planning phase)
+- [ ] 03-01-PLAN.md — Family member whitelist config module with Zod validation and libphonenumber-js
+- [ ] 03-02-PLAN.md — Wire access control, command detection, group chat support into message pipeline
 
 ### Phase 4: Advanced Features
 
@@ -104,7 +105,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | ------------------------------------- | -------------- | ----------- | ---------- |
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
 | 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
-| 3. Multi-User & Polish                | 0/TBD          | Not started | -          |
+| 3. Multi-User & Polish                | 0/2            | Not started | -          |
 | 4. Advanced Features                  | 0/TBD          | Not started | -          |
 
 ---
