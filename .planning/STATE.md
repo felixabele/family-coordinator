@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 ## Current Position
 
 Phase: 3 of 4 (Multi-User & Polish) — IN PROGRESS
-Plan: 1 of 4 in current phase — complete
-Status: Phase 3 Plan 01 complete
-Last activity: 2026-02-15 — Family member whitelist config module created
+Plan: 2 of 4 in current phase — complete
+Status: Phase 3 Plan 02 complete
+Last activity: 2026-02-15 — Multi-user access control and commands integrated
 
-Progress: [████████░░] 60% (Phase 1 complete, Phase 2 complete, Phase 3 1/4)
+Progress: [████████░░] 65% (Phase 1 complete, Phase 2 complete, Phase 3 2/4)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 3 min
-- Total execution time: 0.34 hours
+- Total execution time: 0.47 hours
 
 **By Phase:**
 
@@ -30,12 +30,12 @@ Progress: [████████░░] 60% (Phase 1 complete, Phase 2 comple
 | ----- | ----- | ------ | -------- |
 | 1     | 3     | 12 min | 4 min    |
 | 2     | 2     | 7 min  | 3.5 min  |
-| 3     | 1     | 1 min  | 1 min    |
+| 3     | 2     | 9 min  | 4.5 min  |
 
 **Recent Trend:**
 
-- Last 5 plans: 01-03 (5 min), 02-01 (4 min), 02-02 (3 min), 03-01 (1 min)
-- Trend: Accelerating - Phase 3-01 completed in 1 minute
+- Last 5 plans: 02-01 (4 min), 02-02 (3 min), 03-01 (1 min), 03-02 (8 min)
+- Trend: Variable - Phase 3-02 took longer due to complex integration
 
 _Updated after each plan completion_
 
@@ -80,6 +80,12 @@ Recent decisions affecting current work:
 - Phone numbers normalized to E.164 via Zod transform for consistent storage — 03-01
 - FamilyWhitelist uses Map for O(1) lookup performance — 03-01
 - Empty members array rejected at validation time — 03-01
+- Commands (help/cancel) bypass LLM to save API calls and improve response time — 03-02
+- Non-text messages get polite rejection instead of silent ignore for better UX — 03-02
+- Access control happens before all other processing for security — 03-02
+- Group chat filter removed - bot now supports group conversations — 03-02
+- HELP_TEXT extracted to shared constant (DRY principle) — 03-02
+- Family whitelist loaded at startup for fail-fast validation — 03-02
 
 ### Pending Todos
 
@@ -113,15 +119,16 @@ None yet.
 **Phase 3: IN PROGRESS**
 
 - ✅ Family member whitelist config module with phone validation (03-01)
-- Next: Integrate whitelist into message listener for multi-user access control
+- ✅ Multi-user access control with command detection and personalization (03-02)
+- Next: Service account quotaUser attribution for per-family-member quota tracking
 
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed Phase 3 Plan 01 - Family member whitelist config module
+Stopped at: Completed Phase 3 Plan 02 - Multi-user access control and commands
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-15 — Phase 3 Plan 01 complete (family whitelist config)_
+_Last updated: 2026-02-15 — Phase 3 Plan 02 complete (access control, commands, personalization)_
