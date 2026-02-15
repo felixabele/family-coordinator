@@ -18,6 +18,7 @@ import { createAnthropicClient } from "./llm/client.js";
 import { createCalendarClient } from "./calendar/client.js";
 import { ConversationStore } from "./state/conversation.js";
 import { IdempotencyStore } from "./state/idempotency.js";
+import { loadFamilyConfig, FamilyWhitelist } from "./config/family-members.js";
 
 /**
  * Start the Signal bot daemon
@@ -36,7 +37,16 @@ async function start() {
     "Environment validated",
   );
 
-  // 2. Create service instances
+  // 2. Load family whitelist
+  logger.info("Loading family member configuration...");
+  const familyConfig = await loadFamilyConfig();
+  const familyWhitelist = new FamilyWhitelist(familyConfig);
+  logger.info(
+    { memberCount: familyWhitelist.getMemberCount() },
+    "Family whitelist loaded",
+  );
+
+  // 3. Create service instances
   logger.info("Initializing service instances...");
 
   const signalClient = createSignalClient(config.SIGNAL_PHONE_NUMBER);
@@ -57,17 +67,17 @@ async function start() {
     "Service instances created",
   );
 
-  // 3. Run idempotency cleanup on startup
+  // 4. Run idempotency cleanup on startup
   logger.info("Running idempotency cleanup...");
   await idempotencyStore.cleanup();
   logger.info("Idempotency cleanup complete");
 
-  // 4. Connect to Signal via signal-cli
+  // 5. Connect to Signal via signal-cli
   logger.info("Connecting to Signal...");
   await signalClient.connect();
   logger.info("Connected to Signal");
 
-  // 5. Setup message listener
+  // 6. Setup message listener
   logger.info("Setting up Signal message listener...");
   setupMessageListener({
     signalClient,
@@ -75,6 +85,7 @@ async function start() {
     conversationStore,
     idempotencyStore,
     calendarClient,
+    familyWhitelist,
   });
 
   logger.info(
@@ -85,7 +96,7 @@ async function start() {
     "Signal bot started with calendar integration - listening for messages",
   );
 
-  // 6. Graceful shutdown handlers
+  // 7. Graceful shutdown handlers
   const shutdown = async (signal: string) => {
     logger.info({ signal }, "Received shutdown signal, cleaning up...");
 
