@@ -1,6 +1,8 @@
 node_modules
 dist
 .env
+.env.production
 *.log
+logs/
 .DS_Store
 keys
