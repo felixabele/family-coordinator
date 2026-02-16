@@ -6,13 +6,14 @@ A Signal-based calendar agent for family coordination. Message the bot on Signal
 
 ```
 Signal ← signal-cli (daemon) → Listener → Claude LLM → Signal Response
-                                   ↕
-                           PostgreSQL (state)
+                                   ↕              ↕
+                           PostgreSQL (state)  Google Calendar
 ```
 
 - **signal-cli** — Community CLI tool for Signal, run in daemon mode for event-driven message receiving
 - **signal-sdk** — TypeScript wrapper around signal-cli's JSON-RPC interface
 - **Claude (Anthropic)** — Natural language understanding via tool use for structured intent extraction
+- **Google Calendar** — Shared family calendar via service account with full CRUD operations
 - **PostgreSQL** — Conversation state persistence and message deduplication
 
 ## Prerequisites
@@ -21,6 +22,7 @@ Signal ← signal-cli (daemon) → Listener → Claude LLM → Signal Response
 - [Docker](https://docs.docker.com/get-docker/) (for PostgreSQL)
 - [signal-cli](https://github.com/AsamK/signal-cli) installed and registered with a phone number
 - [Anthropic API key](https://console.anthropic.com/settings/keys)
+- Google Cloud service account with Calendar API enabled
 
 ## Local Setup
 
@@ -38,7 +40,7 @@ npm install
 docker compose up -d
 ```
 
-This starts **PostgreSQL 16** on port 5432 (database: `family_coordinator`, password: `postgres`).
+This starts **PostgreSQL 16** on port 5433 (database: `family_coordinator`, password: `postgres`).
 
 To check it's running:
 
@@ -79,7 +81,33 @@ Start signal-cli in daemon mode (must be running before starting the bot):
 signal-cli -u +YOUR_NUMBER daemon --socket
 ```
 
-### 4. Configure environment
+### 4. Set up Google Calendar
+
+1. Create a Google Cloud project and enable the Google Calendar API
+2. Create a service account and download the JSON key file
+3. Create a shared Google Calendar and share it with the service account email (grant "Make changes to events" permission)
+4. Save the key file as `service-account-key.json` in the project root
+
+### 5. Configure family members
+
+```bash
+cp family-members.example.json family-members.json
+```
+
+Edit `family-members.json` with your family's phone numbers (E.164 format):
+
+```json
+{
+  "members": [
+    { "phone": "+491234567890", "name": "Papa" },
+    { "phone": "+490987654321", "name": "Mama" }
+  ]
+}
+```
+
+Only listed phone numbers can interact with the bot. Unknown senders receive a polite rejection.
+
+### 6. Configure environment
 
 ```bash
 cp .env.example .env
@@ -94,42 +122,71 @@ SIGNAL_PHONE_NUMBER=+12025551234
 # Get from https://console.anthropic.com/settings/keys
 ANTHROPIC_API_KEY=sk-ant-your-key-here
 
+# Path to Google service account key file
+GOOGLE_SERVICE_ACCOUNT_KEY_FILE=./service-account-key.json
+
+# Calendar ID (find in Calendar Settings -> Calendar ID)
+GOOGLE_CALENDAR_ID=your-calendar-id@group.calendar.google.com
+
+# Family timezone (IANA format)
+FAMILY_TIMEZONE=Europe/Berlin
+
 # Pre-configured for docker compose
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/family_coordinator
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/family_coordinator
 ```
 
-### 5. Run database migrations
+### 7. Run database migrations
 
 ```bash
 npm run migrate
 ```
 
-### 6. Start the bot
+### 8. Start the bot
 
 ```bash
 npm run dev
 ```
 
-The bot connects to signal-cli and starts listening for incoming messages.
+The bot connects to signal-cli, validates the family whitelist, and starts listening for incoming messages.
+
+## Usage
+
+The bot responds in German with a casual "du" tone. Only whitelisted family members can interact.
+
+**Calendar operations:**
+
+- "Was steht heute an?" — View today's events
+- "Termine diese Woche" — View this week's events
+- "Zahnarzt am Montag um 10 Uhr" — Create an event
+- "Verschiebe den Zahnarzt auf Dienstag" — Edit an event
+- "Lösche den Zahnarzt-Termin" — Delete an event
+
+**Commands (bypass LLM, instant response):**
+
+- "hilfe" / "help" / "?" — Show capabilities and reset conversation
+- "abbrechen" / "cancel" / "reset" — Clear conversation state
+
+The bot works in both 1:1 and group chats. Greetings are personalized with the family member's name.
 
 ## Testing the Bot
 
 ### Send a message from your phone
 
-Open the Signal app on your phone and send a text message to the bot's registered phone number (the one in your `.env`). The bot will process it and reply.
+Open the Signal app on your phone and send a text message to the bot's registered phone number (the one in your `.env`). Your phone number must be in `family-members.json`.
 
 ### Send a message via signal-cli
 
 From a separate terminal, use another registered number to send a test message:
 
 ```bash
-signal-cli -u +YOUR_OTHER_NUMBER send -m "What's on today?" +BOT_PHONE_NUMBER
+signal-cli -u +YOUR_OTHER_NUMBER send -m "Was steht heute an?" +BOT_PHONE_NUMBER
 ```
 
 ### Troubleshooting
 
 - Make sure signal-cli daemon is running before starting the bot
 - The bot's phone number must be registered with Signal via signal-cli
+- The sender's phone number must be in `family-members.json`
 - The sender must be a real Signal user (you can't message yourself)
 - Check the bot's terminal output for logs — all incoming messages and errors are logged
 
@@ -141,21 +198,28 @@ signal-cli -u +YOUR_OTHER_NUMBER send -m "What's on today?" +BOT_PHONE_NUMBER
 | Production | `npm start`       | Start with Node 22 native TS stripping |
 | Type check | `npm run build`   | Run TypeScript compiler (no emit)      |
 | Migrate    | `npm run migrate` | Apply database migrations              |
+| Format     | `npm run format`  | Format code with Prettier              |
 | Test       | `npm test`        | Run tests with vitest                  |
 
 ## Project Structure
 
 ```
 src/
-  index.ts              # Entry point — connects to Signal, starts listener
+  index.ts              # Entry point — loads config, connects Signal, starts listener
   config/
     env.ts              # Zod-validated environment variables
-    constants.ts        # App constants (timeouts, limits)
+    constants.ts        # App constants (timeouts, limits, help text)
+    family-members.ts   # Family whitelist config with Zod + libphonenumber-js
   signal/
     client.ts           # signal-sdk client factory with retry/rate-limit config
-    listener.ts         # Message listener — receive → deduplicate → LLM → respond
+    listener.ts         # Message pipeline — access control → commands → LLM → respond
     sender.ts           # Send messages via Signal
     types.ts            # Signal message TypeScript types
+  calendar/
+    client.ts           # Google Calendar API client (googleapis)
+    operations.ts       # Calendar CRUD operations (list, create, update, delete)
+    timezone.ts         # Timezone utilities for DST-safe date handling
+    types.ts            # Calendar event TypeScript types
   llm/
     client.ts           # Anthropic SDK client
     intent.ts           # Intent extraction via Claude tool use
@@ -174,4 +238,5 @@ src/
   utils/
     logger.ts           # Pino logger (pretty in dev, JSON in prod)
     errors.ts           # Custom error classes
+family-members.example.json  # Example family member config
 ```
