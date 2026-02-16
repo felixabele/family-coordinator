@@ -20,6 +20,8 @@ export const HELP_TEXT = [
   "",
   '📅 Termine anzeigen — z.B. "Was steht heute an?" oder "Termine diese Woche"',
   '➕ Termine erstellen — z.B. "Zahnarzt am Montag um 10 Uhr"',
+  '🔄 Wiederkehrende Termine — z.B. "Jeden Dienstag Fußball um 16 Uhr"',
+  '✏️ Termine ändern — z.B. "Verschieb den Zahnarzt auf Donnerstag"',
   '❌ Termine löschen — z.B. "Lösche den Zahnarzt-Termin"',
   "",
   'Schreib "abbrechen" um neu zu starten.',
