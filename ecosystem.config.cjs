@@ -3,8 +3,8 @@ module.exports = {
     {
       name: "family-coordinator",
       script: "src/index.ts",
-      interpreter: "node",
-      interpreter_args: "--env-file=.env.production --experimental-strip-types",
+      interpreter: "tsx",
+      interpreter_args: "--env-file=.env.production",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,
