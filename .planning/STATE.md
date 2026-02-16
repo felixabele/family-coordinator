@@ -2,27 +2,27 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-02-13)
+See: .planning/PROJECT.md (updated 2026-02-16)
 
 **Core value:** Any family member can manage the shared calendar instantly through a Signal message — no app switching, no friction.
-**Current focus:** Phase 4 - Advanced Features
+**Current focus:** v1.0 shipped — planning next milestone
 
 ## Current Position
 
-Phase: 4 of 4 (Advanced Features) — COMPLETE
-Plan: 3 of 3 in current phase — complete
-Status: Phase 4 complete - all advanced features integrated
-Last activity: 2026-02-16 — Phase 4-03 complete (11/11 success criteria, 2 tasks, 4 min)
+Milestone: v1.0 MVP — SHIPPED
+Status: All 4 phases complete, milestone archived
+Last activity: 2026-02-16 — v1.0 milestone completed
 
-Progress: [██████████] 100% (Phase 1 complete, Phase 2 complete, Phase 3 complete, Phase 4 complete)
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
-**Velocity:**
+**v1.0 Velocity:**
 
 - Total plans completed: 9
 - Average duration: 3.4 min
 - Total execution time: 0.52 hours
+- Timeline: 4 days (2026-02-13 → 2026-02-16)
 
 **By Phase:**
 
@@ -33,118 +33,29 @@ Progress: [██████████] 100% (Phase 1 complete, Phase 2 compl
 | 3     | 2     | 9 min  | 4.5 min  |
 | 4     | 2     | 7 min  | 3.5 min  |
 
-**Recent Trend:**
-
-- Last 5 plans: 03-01 (1 min), 03-02 (8 min), 04-01 (3 min), 04-03 (4 min)
-- Trend: Consistent - 3-4 min average maintained
-
 _Updated after each plan completion_
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- Signal messaging selected for private, secure family communication — project restructure
-- Claude as LLM for strong natural language understanding
-- Single shared Google Calendar for simpler architecture
-- Node 22 native TypeScript stripping for production (no tsc build step)
-- ESM modules exclusively (type: module) for modern Node.js standard
-- Zod for environment validation with fail-fast approach
-- Pino for structured logging (JSON in production, pretty in dev)
-- signal-sdk from npm (not GitHub — GitHub install missing dist/) for Signal messaging integration — 01-01
-- E.164 phone number format validation with regex in Zod schema — 01-01
-- Retry config: 3 max attempts, exponential backoff from 1s to 10s — 01-01
-- Rate limiting: 5 concurrent, 200ms minimum interval between API calls — 01-01
-- Removed WhatsApp/BullMQ/Redis/Fastify dependencies in favor of event-driven Signal client — 01-01
-- Event-driven message processing via signal-sdk event emitter (not polling) — 01-02
-- Mark messages as processed BEFORE processing to prevent race conditions — 01-02
-- Phase 1 calendar operations return stubs to validate pipeline without Google Calendar — 01-02
-- Migrate idempotency from Redis to PostgreSQL for consolidated state storage — 01-03
-- Run idempotency cleanup on application startup (7-day retention) — 01-03
-- Signal daemon uses event listener registration (no explicit startListening call) — 01-03
-- signal-sdk spawns its own signal-cli process via connect() — no separate daemon needed — verification
-- Use system signal-cli (brew) path instead of bundled binary — verification
-- Set Anthropic baseURL explicitly to avoid ANTHROPIC_BASE_URL env var (Portkey proxy) — verification
-- Docker PostgreSQL on port 5433 to avoid conflict with local PostgreSQL — verification
-- IANA timezone identifiers (Europe/Berlin) for DST-safe Google Calendar handling — 02-01
-- Default event duration: 1 hour when no end time specified — 02-01
-- Date inference: assume today if time hasn't passed, tomorrow if passed — 02-01
-- Event search disambiguation: return single/multiple/not found for LLM processing — 02-01
-- Retry configuration: 3 max attempts on 429 and 5xx errors for Calendar API — 02-01
-- German localization for all user responses with casual du-form tone — 02-02
-- Bot asks for time when creating event without time specified — 02-02
-- Compact event display format: 'HH:mm - Title | HH:mm - Title' — 02-02
-- Disambiguation shows numbered list for multiple event matches — 02-02
-- Phone numbers normalized to E.164 via Zod transform for consistent storage — 03-01
-- FamilyWhitelist uses Map for O(1) lookup performance — 03-01
-- Empty members array rejected at validation time — 03-01
-- Commands (help/cancel) bypass LLM to save API calls and improve response time — 03-02
-- Non-text messages get polite rejection instead of silent ignore for better UX — 03-02
-- Access control happens before all other processing for security — 03-02
-- Group chat filter removed - bot now supports group conversations — 03-02
-- HELP_TEXT extracted to shared constant (DRY principle) — 03-02
-- Family whitelist loaded at startup for fail-fast validation — 03-02
-- RRULE UNTIL must be in UTC with 'Z' suffix per RFC 5545 for Google Calendar API — 04-01
-- Vague time defaults updated: nachmittags=15:00, abends=19:00 (was 14:00, 18:00) — 04-01
-- Recurring event patterns limited to simple frequencies: DAILY, WEEKLY, MONTHLY (no custom intervals) — 04-01
-- Next occurrences formatted as dd.MM for compact German display — 04-01
-- recurringEventId field added to CalendarEvent for future deletion scope detection — 04-01
-- singleEvents=true in conflict detection expands recurring events for accurate overlap checking — 04-03
-- All-day events excluded from conflict detection (don't trigger warnings) — 04-03
-- Conversation state used for multi-turn flows (conflict confirmation, delete scope) — 04-03
-- "Alle zukünftigen" deletion trims RRULE UNTIL, preserving past instances — 04-03
+All v1.0 decisions archived in PROJECT.md Key Decisions table.
 
 ### Pending Todos
 
-(From .planning/todos/pending/ — ideas captured during sessions)
-
-None yet.
+None.
 
 ### Blockers/Concerns
 
-(Issues that affect future work)
-
-**Phase 1: COMPLETE**
-
-- ✅ Signal client foundation established with types and wrapper (01-01)
-- ✅ Message processing pipeline complete with LLM integration (01-02)
-- ✅ Entry point, idempotency migration, WhatsApp cleanup (01-03)
-- ✅ End-to-end verified: receive Signal message → Claude intent extraction → send response
-
-**Phase 2: COMPLETE**
-
-- ✅ Calendar foundation with CRUD operations (02-01)
-- ✅ Calendar pipeline integration (02-02)
-- ✅ End-to-end verified: Signal message → Claude (German) → Google Calendar → Signal response
-
-**Phase 2 Considerations:**
-
-- ✅ Timezone handling uses explicit IANA timezones (Europe/Berlin) — implemented in 02-01
-- Google Calendar quota attribution requires quotaUser parameter per family member — deferred to Phase 3
-- Service account requires manual setup (Google Cloud project, calendar sharing) — user action needed
-
-**Phase 3: COMPLETE**
-
-- ✅ Family member whitelist config module with phone validation (03-01)
-- ✅ Multi-user access control with command detection and personalization (03-02)
-- ✅ Verified: 8/8 must-haves, all 4 success criteria met
-
-**Phase 4: COMPLETE**
-
-- ✅ Recurring event foundation: RRULE formatting, German date parsing, enhanced LLM prompt (04-01)
-- ✅ Conflict detection and recurring event integration: conflict warnings, recurring creation/deletion (04-03)
-- ✅ Verified: 11/11 success criteria met, all advanced features integrated
+None — clean slate for next milestone.
 
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed Phase 4 Plan 03 (conflict detection & recurring event integration). Phase 4 complete.
+Stopped at: v1.0 milestone completed and archived.
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-16 — Phase 4 Plan 03 complete (conflict detection & recurring events integrated)_
+_Last updated: 2026-02-16 — v1.0 MVP shipped and archived_
