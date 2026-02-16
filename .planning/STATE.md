@@ -9,20 +9,20 @@ See: .planning/PROJECT.md (updated 2026-02-13)
 
 ## Current Position
 
-Phase: 3 of 4 (Multi-User & Polish) — COMPLETE
-Plan: 2 of 2 in current phase — complete
-Status: Phase 3 complete, Phase 4 ready to plan
-Last activity: 2026-02-15 — Phase 3 verified (8/8 must-haves, 4/4 success criteria)
+Phase: 4 of 4 (Advanced Features) — IN PROGRESS
+Plan: 1 of 3 in current phase — complete
+Status: Phase 4 Plan 01 complete, Plan 02 ready
+Last activity: 2026-02-16 — Phase 4-01 complete (10/10 success criteria, 2 tasks, 3 min)
 
-Progress: [████████░░] 75% (Phase 1 complete, Phase 2 complete, Phase 3 complete)
+Progress: [█████████░] 80% (Phase 1 complete, Phase 2 complete, Phase 3 complete, Phase 4 in progress: 1/3)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 3 min
-- Total execution time: 0.47 hours
+- Total execution time: 0.52 hours
 
 **By Phase:**
 
@@ -31,11 +31,12 @@ Progress: [████████░░] 75% (Phase 1 complete, Phase 2 comple
 | 1     | 3     | 12 min | 4 min    |
 | 2     | 2     | 7 min  | 3.5 min  |
 | 3     | 2     | 9 min  | 4.5 min  |
+| 4     | 1     | 3 min  | 3 min    |
 
 **Recent Trend:**
 
-- Last 5 plans: 02-01 (4 min), 02-02 (3 min), 03-01 (1 min), 03-02 (8 min)
-- Trend: Variable - Phase 3-02 took longer due to complex integration
+- Last 5 plans: 02-02 (3 min), 03-01 (1 min), 03-02 (8 min), 04-01 (3 min)
+- Trend: Consistent - 3-4 min average maintained
 
 _Updated after each plan completion_
 
@@ -86,6 +87,11 @@ Recent decisions affecting current work:
 - Group chat filter removed - bot now supports group conversations — 03-02
 - HELP_TEXT extracted to shared constant (DRY principle) — 03-02
 - Family whitelist loaded at startup for fail-fast validation — 03-02
+- RRULE UNTIL must be in UTC with 'Z' suffix per RFC 5545 for Google Calendar API — 04-01
+- Vague time defaults updated: nachmittags=15:00, abends=19:00 (was 14:00, 18:00) — 04-01
+- Recurring event patterns limited to simple frequencies: DAILY, WEEKLY, MONTHLY (no custom intervals) — 04-01
+- Next occurrences formatted as dd.MM for compact German display — 04-01
+- recurringEventId field added to CalendarEvent for future deletion scope detection — 04-01
 
 ### Pending Todos
 
@@ -122,13 +128,19 @@ None yet.
 - ✅ Multi-user access control with command detection and personalization (03-02)
 - ✅ Verified: 8/8 must-haves, all 4 success criteria met
 
+**Phase 4: IN PROGRESS**
+
+- ✅ Recurring event foundation: RRULE formatting, German date parsing, enhanced LLM prompt (04-01)
+- ⏳ Bot integration for recurring events (04-02) — next
+- ⏳ Deletion scope for recurring events (04-03)
+
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Phase 3 complete and verified. Ready for Phase 4 planning.
+Last session: 2026-02-16
+Stopped at: Completed Phase 4 Plan 01 (recurring events & date parsing). Ready for Phase 4 Plan 02.
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-15 — Phase 3 complete and verified, ready for Phase 4_
+_Last updated: 2026-02-16 — Phase 4 Plan 01 complete (recurring events foundation)_
