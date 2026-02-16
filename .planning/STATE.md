@@ -51,14 +51,15 @@ None — clean slate for next milestone.
 
 ### Quick Tasks Completed
 
-| #   | Description                                           | Date       | Commit  | Directory                                                              |
-| --- | ----------------------------------------------------- | ---------- | ------- | ---------------------------------------------------------------------- |
-| 1   | Weekend query returns both Saturday and Sunday events | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/) |
+| #   | Description                                                  | Date       | Commit  | Directory                                                                  |
+| --- | ------------------------------------------------------------ | ---------- | ------- | -------------------------------------------------------------------------- |
+| 1   | Weekend query returns both Saturday and Sunday events        | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/)     |
+| 2   | Fix weekend query returning Sunday+Monday instead of Sat+Sun | 2026-02-16 | 113cf46 | [2-fix-weekend-query](./quick/2-fix-weekend-query-returning-sunday-monda/) |
 
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: v1.0 milestone completed and archived.
+Stopped at: Completed quick-2 (fix weekend query returning Sunday+Monday).
 Resume file: None
 
 ---
