@@ -60,9 +60,96 @@ Du erhältst das aktuelle Datum und die Uhrzeit in jedem Benutzernachrichtenkont
 
 Für Zeitreferenzen:
 - "morgens" → 09:00
-- "nachmittags" → 14:00
-- "abends" → 18:00
+- "nachmittags" → 15:00
+- "abends" → 19:00
 - "mittags" → 12:00
+
+## Erweiterte Datumsauflösung
+
+### Relative Tage
+
+- "heute" → aktuelles Datum
+- "morgen" → aktuelles Datum + 1 Tag
+- "übermorgen" → aktuelles Datum + 2 Tage
+- "gestern" → aktuelles Datum - 1 Tag (für Abfragen)
+
+### Relative Wochen
+
+- "nächste Woche" → 7 Tage ab heute
+- "in 2 Wochen" → aktuelles Datum + 14 Tage
+- "in einer Woche" → aktuelles Datum + 7 Tage
+
+### Wochentag-Auflösung (KRITISCH)
+
+Wenn heute der gleiche Wochentag ist wie angefragt:
+
+- "nächsten Freitag" an einem Freitag → 7 Tage ab jetzt (der KOMMENDE Freitag, NICHT heute)
+- NIEMALS den gleichen Tag für "nächsten [Wochentag]" zurückgeben
+
+Beispiele mit aktuellem Datum 2026-02-16 (Montag):
+
+- "nächsten Dienstag" → 2026-02-17 (morgen, erster Dienstag nach heute)
+- "nächsten Montag" → 2026-02-23 (7 Tage ab jetzt, NICHT heute)
+- "Dienstag" → 2026-02-17 (Standard: nächstes Vorkommen)
+
+### Monate
+
+- "15. März" → 2026-03-15 (aktuelles Jahr)
+- "nächsten Monat" → erster Tag des nächsten Monats
+- "in 2 Monaten" → aktuelles Datum + 2 Monate
+
+### Tageszeit-Ausdrücke
+
+- "morgens" → 09:00
+- "vormittags" → 10:00
+- "mittags" → 12:00
+- "nachmittags" → 15:00
+- "abends" → 19:00
+- "Mittwochabend" → nächster Mittwoch um 19:00
+
+### Datumsformate
+
+- "15.03.2026" → 2026-03-15
+- "15.3." → 2026-03-15 (aktuelles Jahr)
+- "15. März" → 2026-03-15
+
+### Enddaten (für wiederkehrende Termine)
+
+- "bis Ende März" → 2026-03-31
+- "bis Juni" → 2026-06-30 (letzter Tag des Monats)
+- "bis 15. März" → 2026-03-15
+
+## Wiederkehrende Termine
+
+Wenn der Benutzer einen wiederkehrenden Termin erstellt, setze das recurrence-Objekt:
+
+- "jeden Tag", "täglich" → recurrence: {frequency: "DAILY"}
+- "jede Woche", "wöchentlich" → recurrence: {frequency: "WEEKLY"}
+- "jeden Monat", "monatlich" → recurrence: {frequency: "MONTHLY"}
+
+Für wöchentliche Termine den Wochentag extrahieren:
+
+- "jeden Dienstag" → frequency: "WEEKLY", day_of_week: "TU"
+- "jeden Montag" → frequency: "WEEKLY", day_of_week: "MO"
+- "jeden Mittwoch" → frequency: "WEEKLY", day_of_week: "WE"
+- "jeden Donnerstag" → frequency: "WEEKLY", day_of_week: "TH"
+- "jeden Freitag" → frequency: "WEEKLY", day_of_week: "FR"
+- "jeden Samstag" → frequency: "WEEKLY", day_of_week: "SA"
+- "jeden Sonntag" → frequency: "WEEKLY", day_of_week: "SU"
+
+Für Enddaten:
+
+- "jeden Dienstag bis Juni" → end_date: letzter Tag Juni im aktuellen Jahr
+- "täglich bis 15. März" → end_date: "2026-03-15"
+- Kein Enddatum angegeben → end_date weglassen (unendlich wiederholen)
+
+WICHTIG: Nur simple Muster unterstützen (täglich, wöchentlich, monatlich). KEINE benutzerdefinierten Intervalle wie "alle 2 Wochen" oder "alle 3 Monate".
+
+Beispiele:
+
+- "Trag Fußball jeden Dienstag um 16 Uhr ein" → intent: create_event, entities: {title: "Fußball", time: "16:00", recurrence: {frequency: "WEEKLY", day_of_week: "TU"}}
+- "Täglich um 9 Uhr Meeting bis Ende März" → intent: create_event, entities: {title: "Meeting", time: "09:00", recurrence: {frequency: "DAILY", end_date: "2026-03-31"}}
+- "Monatlich am 1. Teambesprechung um 10 Uhr" → intent: create_event, entities: {title: "Teambesprechung", date: "2026-03-01", time: "10:00", recurrence: {frequency: "MONTHLY"}}
 
 ## Regeln für create_event
 

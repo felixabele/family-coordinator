@@ -9,12 +9,14 @@ import {
   CreateEventInput,
   UpdateEventInput,
   EventSearchResult,
+  CreateRecurringEventInput,
 } from "./types.js";
 import {
   createEventDateTime,
   createEventEndDateTime,
   formatEventTime,
 } from "./timezone.js";
+import { formatRRule, calculateNextOccurrences } from "./recurring.js";
 import { logger } from "../utils/logger.js";
 import { DateTime } from "luxon";
 
@@ -55,6 +57,7 @@ export async function listEvents(
         endTime: item.end?.dateTime || item.end?.date || "",
         isAllDay,
         description: item.description || undefined,
+        recurringEventId: item.recurringEventId || undefined,
       };
     });
 
@@ -129,6 +132,7 @@ export async function findEvents(
         endTime: item.end?.dateTime || item.end?.date || "",
         isAllDay,
         description: item.description || undefined,
+        recurringEventId: item.recurringEventId || undefined,
       };
     });
 
@@ -231,6 +235,7 @@ export async function createEvent(
       endTime: item.end?.dateTime || item.end?.date || "",
       isAllDay,
       description: item.description || undefined,
+      recurringEventId: item.recurringEventId || undefined,
     };
 
     logger.info(
@@ -380,6 +385,7 @@ export async function updateEvent(
       endTime: item.end?.dateTime || item.end?.date || "",
       isAllDay,
       description: item.description || undefined,
+      recurringEventId: item.recurringEventId || undefined,
     };
 
     logger.info(
@@ -463,5 +469,116 @@ export async function deleteEvent(
       "Failed to delete event",
     );
     throw new CalendarError("API_ERROR", "Failed to delete calendar event");
+  }
+}
+
+/**
+ * Create a recurring calendar event.
+ */
+export async function createRecurringEvent(
+  client: CalendarClient,
+  input: CreateRecurringEventInput,
+): Promise<{ event: CalendarEvent; nextOccurrences: string[] }> {
+  const durationMinutes = input.durationMinutes ?? 60;
+
+  const start = createEventDateTime(input.date, input.time, client.timezone);
+  const end = createEventEndDateTime(
+    input.date,
+    input.time,
+    durationMinutes,
+    client.timezone,
+  );
+
+  // Format RRULE string
+  const rruleString = formatRRule({
+    frequency: input.recurrence.frequency,
+    dayOfWeek: input.recurrence.dayOfWeek,
+    endDate: input.recurrence.endDate,
+    timezone: client.timezone,
+  });
+
+  try {
+    logger.info(
+      {
+        calendarId: client.calendarId,
+        summary: input.summary,
+        date: input.date,
+        time: input.time,
+        recurrence: input.recurrence,
+      },
+      "Creating recurring calendar event",
+    );
+
+    const response = await client.calendar.events.insert({
+      calendarId: client.calendarId,
+      requestBody: {
+        summary: input.summary,
+        description: input.description,
+        start,
+        end,
+        recurrence: [rruleString],
+      },
+    });
+
+    const item = response.data;
+    const isAllDay = !!item.start?.date;
+
+    const event: CalendarEvent = {
+      id: item.id!,
+      summary: item.summary || "(No title)",
+      startTime: item.start?.dateTime || item.start?.date || "",
+      endTime: item.end?.dateTime || item.end?.date || "",
+      isAllDay,
+      description: item.description || undefined,
+      recurringEventId: item.recurringEventId || undefined,
+    };
+
+    // Calculate next 3 occurrences for confirmation message
+    const occurrences = calculateNextOccurrences(
+      input.date,
+      input.time,
+      input.recurrence.frequency,
+      3,
+      client.timezone,
+    );
+
+    const nextOccurrences = occurrences.map((dt) => dt.toFormat("dd.MM"));
+
+    logger.info(
+      {
+        calendarId: client.calendarId,
+        eventId: event.id,
+        summary: input.summary,
+        nextOccurrences,
+      },
+      "Recurring event created successfully",
+    );
+
+    return { event, nextOccurrences };
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const code = (error as { code?: number }).code;
+      if (code === 403) {
+        throw new CalendarError(
+          "PERMISSION_DENIED",
+          "Calendar access denied. Check service account permissions.",
+        );
+      }
+      if (code === 429) {
+        throw new CalendarError(
+          "RATE_LIMITED",
+          "Calendar API rate limit exceeded.",
+        );
+      }
+    }
+
+    logger.error(
+      { error, calendarId: client.calendarId, input },
+      "Failed to create recurring event",
+    );
+    throw new CalendarError(
+      "API_ERROR",
+      "Failed to create recurring calendar event",
+    );
   }
 }
