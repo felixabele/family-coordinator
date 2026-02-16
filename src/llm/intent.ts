@@ -3,6 +3,7 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import { DateTime } from "luxon";
 import { logger } from "../utils/logger.js";
 import { MAX_HISTORY_MESSAGES } from "../config/constants.js";
 import { CALENDAR_SYSTEM_PROMPT } from "./prompts.js";
@@ -122,6 +123,7 @@ export interface MessageHistoryEntry {
  * @param client - Initialized Anthropic client
  * @param userMessage - The user's natural language message
  * @param conversationHistory - Optional message history for context (last N messages)
+ * @param timezone - IANA timezone for date context (e.g., "Europe/Berlin")
  * @returns Validated CalendarIntent with structured entities
  * @throws IntentExtractionError if extraction fails or output is invalid
  */
@@ -129,11 +131,24 @@ export async function extractIntent(
   client: Anthropic,
   userMessage: string,
   conversationHistory?: MessageHistoryEntry[],
+  timezone?: string,
 ): Promise<CalendarIntent> {
   try {
-    // Build message context with current date/time for relative date resolution
-    const now = new Date();
-    const dateContext = `[Current date/time: ${now.toISOString()}]`;
+    // Build message context with current date/time in user's timezone
+    // CRITICAL: Use local timezone, not UTC, so weekday resolution is correct
+    const tz = timezone || "Europe/Berlin";
+    const now = DateTime.now().setZone(tz);
+    const weekdayNames = [
+      "",
+      "Montag",
+      "Dienstag",
+      "Mittwoch",
+      "Donnerstag",
+      "Freitag",
+      "Samstag",
+      "Sonntag",
+    ];
+    const dateContext = `[Aktuelles Datum: ${now.toFormat("yyyy-MM-dd")} (${weekdayNames[now.weekday]}), Uhrzeit: ${now.toFormat("HH:mm")}, Zeitzone: ${tz}]`;
     const userMessageWithContext = `${dateContext}\n\n${userMessage}`;
 
     // Build messages array from conversation history

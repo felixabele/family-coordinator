@@ -86,11 +86,11 @@ Wenn heute der gleiche Wochentag ist wie angefragt:
 - "nächsten Freitag" an einem Freitag → 7 Tage ab jetzt (der KOMMENDE Freitag, NICHT heute)
 - NIEMALS den gleichen Tag für "nächsten [Wochentag]" zurückgeben
 
-Beispiele mit aktuellem Datum 2026-02-16 (Montag):
+Beispiele (relativ zum aktuellen Datum berechnen):
 
-- "nächsten Dienstag" → 2026-02-17 (morgen, erster Dienstag nach heute)
-- "nächsten Montag" → 2026-02-23 (7 Tage ab jetzt, NICHT heute)
-- "Dienstag" → 2026-02-17 (Standard: nächstes Vorkommen)
+- "nächsten [Wochentag]" → der ERSTE [Wochentag] nach heute. Wenn heute der gleiche Wochentag ist → +7 Tage
+- "[Wochentag]" ohne "nächsten" → nächstes Vorkommen dieses Wochentags (kann heute sein, wenn noch nicht vorbei)
+- WICHTIG: Berechne das Datum immer basierend auf dem aktuellen Datum aus dem Kontext, nicht auf hartkodierten Beispielen
 
 ### Monate
 

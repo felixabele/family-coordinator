@@ -714,11 +714,12 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       // Add user message to history
       await deps.conversationStore.addToHistory(phoneNumber, "user", text);
 
-      // Extract intent via Claude LLM
+      // Extract intent via Claude LLM (pass timezone for correct weekday resolution)
       const intent = await extractIntent(
         deps.anthropicClient,
         text,
         state?.messageHistory || [],
+        deps.calendarClient.timezone,
       );
 
       logger.info(
