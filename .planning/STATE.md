@@ -49,6 +49,12 @@ None.
 
 None — clean slate for next milestone.
 
+### Quick Tasks Completed
+
+| #   | Description                                           | Date       | Commit  | Directory                                                              |
+| --- | ----------------------------------------------------- | ---------- | ------- | ---------------------------------------------------------------------- |
+| 1   | Weekend query returns both Saturday and Sunday events | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/) |
+
 ## Session Continuity
 
 Last session: 2026-02-16
