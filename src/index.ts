@@ -19,6 +19,7 @@ import { createCalendarClient } from "./calendar/client.js";
 import { ConversationStore } from "./state/conversation.js";
 import { IdempotencyStore } from "./state/idempotency.js";
 import { loadFamilyConfig, FamilyWhitelist } from "./config/family-members.js";
+import { startHealthServer, stopHealthServer } from "./health.js";
 
 /**
  * Start the Signal bot daemon
@@ -96,11 +97,18 @@ async function start() {
     "Signal bot started with calendar integration - listening for messages",
   );
 
-  // 7. Graceful shutdown handlers
+  // 7. Start health check server
+  const healthServer = startHealthServer();
+
+  // 8. Graceful shutdown handlers
   const shutdown = async (signal: string) => {
     logger.info({ signal }, "Received shutdown signal, cleaning up...");
 
     try {
+      // Stop health check server first (monitoring sees it go down)
+      await stopHealthServer(healthServer);
+      logger.info("Health check server stopped");
+
       // Stop Signal client
       await signalClient.gracefulShutdown();
       logger.info("Signal client stopped");
