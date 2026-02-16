@@ -481,9 +481,41 @@ export async function createRecurringEvent(
 ): Promise<{ event: CalendarEvent; nextOccurrences: string[] }> {
   const durationMinutes = input.durationMinutes ?? 60;
 
-  const start = createEventDateTime(input.date, input.time, client.timezone);
+  // For weekly recurrence with a specific day, adjust start date to the next
+  // occurrence of that weekday so the first instance lands on the right day
+  let effectiveDate = input.date;
+  if (input.recurrence.frequency === "WEEKLY" && input.recurrence.dayOfWeek) {
+    const dayMap: Record<string, number> = {
+      MO: 1,
+      TU: 2,
+      WE: 3,
+      TH: 4,
+      FR: 5,
+      SA: 6,
+      SU: 7,
+    };
+    const targetDay = dayMap[input.recurrence.dayOfWeek];
+    if (targetDay) {
+      const currentDate = DateTime.fromISO(input.date, {
+        zone: client.timezone,
+      });
+      const currentDay = currentDate.weekday; // 1=Mon, 7=Sun
+      let daysUntil = targetDay - currentDay;
+      if (daysUntil <= 0) daysUntil += 7; // next week if today or past
+      if (daysUntil === 7 && currentDay === targetDay) daysUntil = 0; // same day is OK if explicitly that day
+      // Actually, if it's the same day, use today
+      if (currentDay === targetDay) {
+        daysUntil = 0;
+      }
+      effectiveDate = currentDate
+        .plus({ days: daysUntil })
+        .toFormat("yyyy-MM-dd");
+    }
+  }
+
+  const start = createEventDateTime(effectiveDate, input.time, client.timezone);
   const end = createEventEndDateTime(
-    input.date,
+    effectiveDate,
     input.time,
     durationMinutes,
     client.timezone,
@@ -535,7 +567,7 @@ export async function createRecurringEvent(
 
     // Calculate next 3 occurrences for confirmation message
     const occurrences = calculateNextOccurrences(
-      input.date,
+      effectiveDate,
       input.time,
       input.recurrence.frequency,
       3,
