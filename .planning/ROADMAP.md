@@ -29,17 +29,16 @@ See: `.planning/milestones/v1.0-ROADMAP.md` for full details.
 
 ### Phase 1: Deployment
 
-**Goal:** Deploy the Family Coordinator Signal bot to a production VPS as a containerized application with Docker Compose, automated PostgreSQL backups, secure secrets management, and health monitoring.
+**Goal:** Deploy the Family Coordinator Signal bot to a production VPS with PM2 process management, PostgreSQL via apt, automated pg_dump backups, and health monitoring -- bare metal, no Docker, no reverse proxy.
 **Depends on:** v1.0 MVP
-**Plans:** 3 plans
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] 01-01-PLAN.md — Dockerize application with secrets management and health check endpoint
-- [ ] 01-02-PLAN.md — Production operations tooling (PM2 config, deploy script, env template)
-- [ ] 01-03-PLAN.md — VPS deployment and verification checkpoint
+- [ ] 01-01-PLAN.md — Health check endpoint, PM2 config, deploy script, backup script
+- [ ] 01-02-PLAN.md — VPS deployment and verification checkpoint
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-16 — Phase 1 Deployment planned_
+_Last updated: 2026-02-16 — Phase 1 Deployment re-planned (simplified: bare metal + PM2)_
