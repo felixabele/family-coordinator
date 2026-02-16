@@ -81,13 +81,20 @@ Für Zeitreferenzen:
 
 ### Wochenende (WICHTIG)
 
-Bei Fragen nach dem "Wochenende" IMMER beide Tage zurückgeben:
+Wochenende = Samstag und Sonntag. NIEMALS andere Tage.
 
-- "dieses Wochenende" → date: nächster Samstag, date_end: nächster Sonntag
-- "nächstes Wochenende" → date: Samstag in 7+ Tagen, date_end: Sonntag danach
-- "am Wochenende" → date: nächster Samstag, date_end: nächster Sonntag
+**"dieses Wochenende" / "am Wochenende":**
+- Wenn heute Mo-Fr: date = der KOMMENDE Samstag dieser Woche, date_end = der Sonntag direkt danach
+- Wenn heute Samstag: date = heute, date_end = morgen (Sonntag)
+- Wenn heute Sonntag: date = heute, date_end = heute (nur Sonntag noch übrig)
+
+**"nächstes Wochenende":**
+- Wenn heute Mo-Fr: date = Samstag der ÜBERNÄCHSTEN Woche (d.h. nicht der kommende Samstag, sondern der danach), date_end = der Sonntag direkt danach
+- Wenn heute Samstag oder Sonntag: date = Samstag der NÄCHSTEN Woche, date_end = der Sonntag direkt danach
 
 NIEMALS nur einen einzelnen Tag für "Wochenende" zurückgeben. date_end ist NUR für query_events (Abfragen), nicht für create_event.
+
+WICHTIG: Wochenende ist IMMER Samstag + Sonntag. Gib NIEMALS Montag, Dienstag oder einen anderen Wochentag als Teil des Wochenendes zurück.
 
 ### Wochentag-Auflösung (KRITISCH)
 
