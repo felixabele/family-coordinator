@@ -1,6 +1,10 @@
 {
   "members": [
-    { "phone": "+4915208935143", "name": "Felix" },
+    {
+      "phone": "+4915208935143",
+      "uuid": "f0503b37-fcd2-415b-9302-a8ecebf066bc",
+      "name": "Felix"
+    },
     { "phone": "+4915236418260", "name": "Franzi" }
   ]
 }

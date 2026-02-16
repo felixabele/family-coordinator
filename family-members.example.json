@@ -1,6 +1,10 @@
 {
   "members": [
-    { "phone": "+491234567890", "name": "Papa" },
+    {
+      "phone": "+491234567890",
+      "name": "Papa",
+      "uuid": "f0503b37-fcd2-415b-9302-a8ecebf066bc"
+    },
     { "phone": "+490987654321", "name": "Mama" }
   ]
 }

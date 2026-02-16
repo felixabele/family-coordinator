@@ -149,6 +149,18 @@ npm run dev
 
 The bot connects to signal-cli, validates the family whitelist, and starts listening for incoming messages.
 
+### On the Server
+
+```bash
+  pm2 delete family-coordinator
+  pm2 start ecosystem.config.cjs
+  pm2 save
+```
+
+### Restart
+
+`pm2 restart family-coordinator`
+
 ## Usage
 
 The bot responds in German with a casual "du" tone. Only whitelisted family members can interact.

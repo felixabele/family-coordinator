@@ -30,6 +30,7 @@ const FamilyMemberSchema = z.object({
     }
   }),
   name: z.string().min(1, "Name cannot be empty").max(50, "Name too long"),
+  uuid: z.string().uuid().optional(),
 });
 
 /**
@@ -77,30 +78,32 @@ export async function loadFamilyConfig(
  * Phone numbers are stored in E.164 format for consistent matching.
  */
 export class FamilyWhitelist {
-  private members: Map<string, string>;
+  private membersByPhone: Map<string, string>;
+  private membersByUuid: Map<string, string>;
 
   constructor(config: FamilyConfig) {
-    this.members = new Map(config.members.map((m) => [m.phone, m.name]));
+    this.membersByPhone = new Map(config.members.map((m) => [m.phone, m.name]));
+    this.membersByUuid = new Map(
+      config.members.filter((m) => m.uuid).map((m) => [m.uuid!, m.name]),
+    );
   }
 
   /**
-   * Check if a phone number is allowed
-   *
-   * @param phoneNumber - Phone number in E.164 format
-   * @returns true if phone number belongs to a family member
+   * Check if an identifier (phone number or UUID) is allowed
    */
-  isAllowed(phoneNumber: string): boolean {
-    return this.members.has(phoneNumber);
+  isAllowed(identifier: string): boolean {
+    return (
+      this.membersByPhone.has(identifier) || this.membersByUuid.has(identifier)
+    );
   }
 
   /**
-   * Get family member name by phone number
-   *
-   * @param phoneNumber - Phone number in E.164 format
-   * @returns Family member name, or undefined if not found
+   * Get family member name by phone number or UUID
    */
-  getName(phoneNumber: string): string | undefined {
-    return this.members.get(phoneNumber);
+  getName(identifier: string): string | undefined {
+    return (
+      this.membersByPhone.get(identifier) ?? this.membersByUuid.get(identifier)
+    );
   }
 
   /**
