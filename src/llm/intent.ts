@@ -283,7 +283,7 @@ export async function extractIntent(
       throw error;
     }
 
-    logger.error({ error }, "Failed to extract intent from message");
+    logger.error({ err: error }, "Failed to extract intent from message");
     throw new IntentExtractionError("Intent extraction failed", error as Error);
   }
 }

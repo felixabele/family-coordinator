@@ -112,6 +112,6 @@ export class FamilyWhitelist {
    * @returns Number of family members in whitelist
    */
   getMemberCount(): number {
-    return this.members.size;
+    return this.membersByPhone.size;
   }
 }

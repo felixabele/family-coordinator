@@ -28,7 +28,7 @@ async function checkDatabase(): Promise<boolean> {
     const result = await pool.query("SELECT 1");
     return result.rowCount === 1;
   } catch (error) {
-    logger.error({ error }, "Database health check failed");
+    logger.error({ err: error }, "Database health check failed");
     return false;
   }
 }

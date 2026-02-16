@@ -120,7 +120,7 @@ async function start() {
       logger.info("Graceful shutdown complete");
       process.exit(0);
     } catch (error) {
-      logger.error({ error }, "Error during shutdown");
+      logger.error({ err: error }, "Error during shutdown");
       process.exit(1);
     }
   };
@@ -132,6 +132,7 @@ async function start() {
 
 // Start the application
 start().catch((error) => {
-  logger.error({ error }, "Fatal error during startup");
+  logger.error({ err: error }, "Fatal error during startup");
+  console.error("Startup failed:", error);
   process.exit(1);
 });

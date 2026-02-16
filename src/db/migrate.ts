@@ -30,7 +30,7 @@ async function runMigrations() {
 
     logger.info("All migrations completed successfully");
   } catch (error) {
-    logger.error({ error }, "Migration failed");
+    logger.error({ err: error }, "Migration failed");
     throw error;
   } finally {
     await closePool();
