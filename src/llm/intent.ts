@@ -51,6 +51,11 @@ const calendarIntentTool: Anthropic.Tool = {
             type: "string",
             description: "Event date in YYYY-MM-DD format",
           },
+          date_end: {
+            type: "string",
+            description:
+              "End date in YYYY-MM-DD format for multi-day queries (e.g., weekend = Saturday to Sunday). Only for query_events.",
+          },
           time: {
             type: "string",
             description: "Event time in HH:MM 24-hour format",

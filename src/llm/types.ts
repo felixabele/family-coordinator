@@ -31,6 +31,7 @@ export interface RecurrenceEntities {
 export interface CalendarEntities {
   title?: string;
   date?: string;
+  date_end?: string; // YYYY-MM-DD end date for multi-day queries (e.g., "Wochenende")
   time?: string;
   duration_minutes?: number;
   end_time?: string; // HH:mm format for explicit end times
@@ -60,6 +61,7 @@ export const RecurrenceEntitiesSchema = z.object({
 export const CalendarEntitiesSchema = z.object({
   title: z.string().optional(),
   date: z.string().optional(),
+  date_end: z.string().optional(),
   time: z.string().optional(),
   duration_minutes: z.number().int().positive().optional(),
   end_time: z.string().optional(),

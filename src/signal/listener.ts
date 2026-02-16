@@ -260,6 +260,37 @@ async function handleIntent(
           intent.entities.date ||
           DateTime.now().setZone(tz).toFormat("yyyy-MM-dd");
 
+        // Multi-day query (e.g., "Wochenende" → Saturday + Sunday)
+        if (intent.entities.date_end) {
+          const days: string[] = [];
+          let current = DateTime.fromISO(queryDate, { zone: tz });
+          const end = DateTime.fromISO(intent.entities.date_end, { zone: tz });
+
+          while (current <= end) {
+            days.push(current.toFormat("yyyy-MM-dd"));
+            current = current.plus({ days: 1 });
+          }
+
+          const parts: string[] = [];
+          for (const day of days) {
+            const events = await listEvents(deps.calendarClient, day);
+            const dayName = formatDayName(day, tz);
+            if (events.length === 0) {
+              parts.push(`${dayName}: frei`);
+            } else {
+              const formatted = events
+                .map((event) => {
+                  if (event.isAllDay) return event.summary;
+                  const time = formatEventTime(event.startTime, tz);
+                  return `${time} - ${event.summary}`;
+                })
+                .join(" | ");
+              parts.push(`${dayName}: ${formatted}`);
+            }
+          }
+          return parts.join("\n");
+        }
+
         const events = await listEvents(deps.calendarClient, queryDate);
 
         if (events.length === 0) {

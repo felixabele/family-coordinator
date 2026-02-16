@@ -79,6 +79,16 @@ Für Zeitreferenzen:
 - "in 2 Wochen" → aktuelles Datum + 14 Tage
 - "in einer Woche" → aktuelles Datum + 7 Tage
 
+### Wochenende (WICHTIG)
+
+Bei Fragen nach dem "Wochenende" IMMER beide Tage zurückgeben:
+
+- "dieses Wochenende" → date: nächster Samstag, date_end: nächster Sonntag
+- "nächstes Wochenende" → date: Samstag in 7+ Tagen, date_end: Sonntag danach
+- "am Wochenende" → date: nächster Samstag, date_end: nächster Sonntag
+
+NIEMALS nur einen einzelnen Tag für "Wochenende" zurückgeben. date_end ist NUR für query_events (Abfragen), nicht für create_event.
+
 ### Wochentag-Auflösung (KRITISCH)
 
 Wenn heute der gleiche Wochentag ist wie angefragt:
