@@ -90,11 +90,13 @@ Plans:
 2. User can create recurring events ("every Tuesday at 4pm") via natural language
 3. Bot parses smart relative dates ("next Tuesday", "in 2 weeks") accurately
 4. Bot detects scheduling conflicts and warns before confirming new events
-   **Plans**: TBD
+   **Plans**: 3 plans
 
 Plans:
 
-- [ ] (Plans will be created during planning phase)
+- [ ] 04-01-PLAN.md — Recurring event types, RRULE formatting, and enhanced German date parsing prompt
+- [ ] 04-02-PLAN.md — Proactive reminder infrastructure with BullMQ, Redis, and sent_reminders tracking
+- [ ] 04-03-PLAN.md — Conflict detection, recurring event UX flows, and full pipeline integration
 
 ## Progress
 
@@ -106,9 +108,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
 | 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
 | 3. Multi-User & Polish                | 2/2            | Complete    | 2026-02-15 |
-| 4. Advanced Features                  | 0/TBD          | Not started | -          |
+| 4. Advanced Features                  | 0/3            | In progress | -          |
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-15 — Phase 3 complete and verified_
+_Last updated: 2026-02-16 — Phase 4 planned (3 plans in 2 waves)_
