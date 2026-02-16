@@ -17,6 +17,15 @@ export type IntentType =
   | "unclear";
 
 /**
+ * Recurrence pattern for recurring events
+ */
+export interface RecurrenceEntities {
+  frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+  day_of_week?: "MO" | "TU" | "WE" | "TH" | "FR" | "SA" | "SU";
+  end_date?: string; // YYYY-MM-DD format, null = forever
+}
+
+/**
  * Entities extracted from user message for calendar operations
  */
 export interface CalendarEntities {
@@ -26,6 +35,7 @@ export interface CalendarEntities {
   duration_minutes?: number;
   end_time?: string; // HH:mm format for explicit end times
   event_search_query?: string; // Search text for update/delete operations
+  recurrence?: RecurrenceEntities;
 }
 
 /**
@@ -41,6 +51,12 @@ export interface CalendarIntent {
 /**
  * Zod schema for runtime validation of Claude tool use output
  */
+export const RecurrenceEntitiesSchema = z.object({
+  frequency: z.enum(["DAILY", "WEEKLY", "MONTHLY"]),
+  day_of_week: z.enum(["MO", "TU", "WE", "TH", "FR", "SA", "SU"]).optional(),
+  end_date: z.string().optional(),
+});
+
 export const CalendarEntitiesSchema = z.object({
   title: z.string().optional(),
   date: z.string().optional(),
@@ -48,6 +64,7 @@ export const CalendarEntitiesSchema = z.object({
   duration_minutes: z.number().int().positive().optional(),
   end_time: z.string().optional(),
   event_search_query: z.string().optional(),
+  recurrence: RecurrenceEntitiesSchema.optional(),
 });
 
 export const CalendarIntentSchema = z.object({

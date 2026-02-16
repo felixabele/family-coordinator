@@ -68,6 +68,29 @@ const calendarIntentTool: Anthropic.Tool = {
             description:
               "Search text to find the target event for update/delete operations",
           },
+          recurrence: {
+            type: "object",
+            properties: {
+              frequency: {
+                type: "string",
+                enum: ["DAILY", "WEEKLY", "MONTHLY"],
+                description: "How often the event repeats",
+              },
+              day_of_week: {
+                type: "string",
+                enum: ["MO", "TU", "WE", "TH", "FR", "SA", "SU"],
+                description:
+                  "Day of week for weekly recurrence (e.g., TU for Tuesday)",
+              },
+              end_date: {
+                type: "string",
+                description:
+                  "End date in YYYY-MM-DD format. Omit for repeat forever.",
+              },
+            },
+            description:
+              "Recurring event pattern. Only set when user explicitly requests repetition (jeden, täglich, wöchentlich, monatlich).",
+          },
         },
         description: "Extracted calendar entities",
       },

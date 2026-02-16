@@ -9,6 +9,7 @@ export interface CalendarEvent {
   endTime: string; // ISO string
   isAllDay: boolean;
   description?: string;
+  recurringEventId?: string;
 }
 
 export interface CreateEventInput {
@@ -17,6 +18,14 @@ export interface CreateEventInput {
   time: string; // HH:mm
   durationMinutes?: number; // default: 60
   description?: string;
+}
+
+export interface CreateRecurringEventInput extends CreateEventInput {
+  recurrence: {
+    frequency: "DAILY" | "WEEKLY" | "MONTHLY";
+    dayOfWeek?: string;
+    endDate?: string;
+  };
 }
 
 export interface UpdateEventInput {
