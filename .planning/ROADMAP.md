@@ -35,7 +35,7 @@ See: `.planning/milestones/v1.0-ROADMAP.md` for full details.
 
 Plans:
 
-- [ ] 01-01-PLAN.md — Health check endpoint, PM2 config, deploy script, backup script
+- [x] 01-01-PLAN.md — Health check endpoint, PM2 config, deploy script, backup script
 - [ ] 01-02-PLAN.md — VPS deployment and verification checkpoint
 
 ---

@@ -9,11 +9,13 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 ## Current Position
 
-Milestone: v1.0 MVP — SHIPPED
-Status: All 4 phases complete, milestone archived
-Last activity: 2026-02-16 — Completed quick task 2: Fix weekend query returning Sunday+Monday instead of Saturday+Sunday
+Milestone: Phase 1 - Deployment
+Current Phase: 01-deployment
+Current Plan: 2 (of 2)
+Status: In progress
+Last activity: 2026-02-16 — Completed 01-01-PLAN.md: Health check endpoint, PM2 config, deploy/backup scripts
 
-Progress: [██████████] 100%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -24,14 +26,11 @@ Progress: [██████████] 100%
 - Total execution time: 0.52 hours
 - Timeline: 4 days (2026-02-13 → 2026-02-16)
 
-**By Phase:**
+**Phase 01-deployment Metrics:**
 
-| Phase | Plans | Total  | Avg/Plan |
-| ----- | ----- | ------ | -------- |
-| 1     | 3     | 12 min | 4 min    |
-| 2     | 2     | 7 min  | 3.5 min  |
-| 3     | 2     | 9 min  | 4.5 min  |
-| 4     | 2     | 7 min  | 3.5 min  |
+| Plan  | Name                        | Duration | Completed           | Tasks | Files | Commits |
+| ----- | --------------------------- | -------- | ------------------- | ----- | ----- | ------- |
+| 01-01 | Production deployment setup | 2.6 min  | 2026-02-16 12:51:22 | 2     | 8     | 2       |
 
 _Updated after each plan completion_
 
@@ -39,11 +38,22 @@ _Updated after each plan completion_
 
 ### Decisions
 
-All v1.0 decisions archived in PROJECT.md Key Decisions table.
+**Phase 01-deployment:**
+
+- Use Node.js built-in http module for health check to avoid dependencies (01-01)
+- Health server stops first during shutdown for monitoring visibility (01-01)
+- PM2 single fork instance with 500M memory limit for VPS deployment (01-01)
+- PostgreSQL backups with 7-day retention using pg_dump + gzip (01-01)
+
+(v1.0 decisions archived in PROJECT.md Key Decisions table)
 
 ### Pending Todos
 
 None.
+
+### Roadmap Evolution
+
+- Phase 1 added: Deployment
 
 ### Blockers/Concerns
 
@@ -59,10 +69,10 @@ None — clean slate for next milestone.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed quick-2 (fix weekend query returning Sunday+Monday).
+Stopped at: Completed 01-01-PLAN.md (Production deployment artifacts)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-16 — v1.0 MVP shipped and archived_
+_Last updated: 2026-02-16 — Completed 01-01-PLAN.md (deployment infrastructure)_
