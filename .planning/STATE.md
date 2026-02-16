@@ -12,10 +12,10 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 Milestone: Phase 1 - Deployment
 Current Phase: 01-deployment
 Current Plan: 2 (of 2)
-Status: In progress
-Last activity: 2026-02-16 — Completed 01-01-PLAN.md: Health check endpoint, PM2 config, deploy/backup scripts
+Status: Complete
+Last activity: 2026-02-16 — Completed 01-02-PLAN.md: VPS deployment and production verification
 
-Progress: [█████░░░░░] 50%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -28,9 +28,10 @@ Progress: [█████░░░░░] 50%
 
 **Phase 01-deployment Metrics:**
 
-| Plan  | Name                        | Duration | Completed           | Tasks | Files | Commits |
-| ----- | --------------------------- | -------- | ------------------- | ----- | ----- | ------- |
-| 01-01 | Production deployment setup | 2.6 min  | 2026-02-16 12:51:22 | 2     | 8     | 2       |
+| Plan  | Name                            | Duration  | Completed           | Tasks | Files | Commits |
+| ----- | ------------------------------- | --------- | ------------------- | ----- | ----- | ------- |
+| 01-01 | Production deployment setup     | 2.6 min   | 2026-02-16 12:51:22 | 2     | 8     | 2       |
+| 01-02 | VPS deployment and verification | 412.7 min | 2026-02-16 19:26:04 | 1     | 12    | 5       |
 
 _Updated after each plan completion_
 
@@ -44,6 +45,10 @@ _Updated after each plan completion_
 - Health server stops first during shutdown for monitoring visibility (01-01)
 - PM2 single fork instance with 500M memory limit for VPS deployment (01-01)
 - PostgreSQL backups with 7-day retention using pg_dump + gzip (01-01)
+- Use UUID fallback for family member matching when phone numbers unavailable (01-02)
+- Widen phone number columns to accommodate international format variations (01-02)
+- Deploy to AlmaLinux 9 VPS with signal-cli fresh registration (01-02)
+- Family members matched by UUID as primary identifier with phone as fallback (01-02)
 
 (v1.0 decisions archived in PROJECT.md Key Decisions table)
 
@@ -69,10 +74,10 @@ None — clean slate for next milestone.
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Completed 01-01-PLAN.md (Production deployment artifacts)
+Stopped at: Completed 01-02-PLAN.md (VPS deployment and verification)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-16 — Completed 01-01-PLAN.md (deployment infrastructure)_
+_Last updated: 2026-02-16 — Completed 01-02-PLAN.md (Phase 01-deployment complete)_
