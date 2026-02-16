@@ -81,22 +81,20 @@ Plans:
 
 ### Phase 4: Advanced Features
 
-**Goal**: Bot proactively reminds users of upcoming events and supports recurring event creation
+**Goal**: Bot supports recurring events, smart German date parsing, and scheduling conflict detection
 **Depends on**: Phase 3
-**Requirements**: (All v2 requirements from REQUIREMENTS.md - deferred scope)
+**Requirements**: ADV-02, ADV-03, ADV-04
 **Success Criteria** (what must be TRUE):
 
-1. Bot sends proactive event reminders via Signal before events
-2. User can create recurring events ("every Tuesday at 4pm") via natural language
-3. Bot parses smart relative dates ("next Tuesday", "in 2 weeks") accurately
-4. Bot detects scheduling conflicts and warns before confirming new events
-   **Plans**: 3 plans
+1. User can create recurring events ("every Tuesday at 4pm") via natural language
+2. Bot parses smart relative dates ("next Tuesday", "in 2 weeks") accurately
+3. Bot detects scheduling conflicts and warns before confirming new events
+   **Plans**: 2 plans
 
 Plans:
 
 - [ ] 04-01-PLAN.md — Recurring event types, RRULE formatting, and enhanced German date parsing prompt
-- [ ] 04-02-PLAN.md — Proactive reminder infrastructure with BullMQ, Redis, and sent_reminders tracking
-- [ ] 04-03-PLAN.md — Conflict detection, recurring event UX flows, and full pipeline integration
+- [ ] 04-03-PLAN.md — Conflict detection, recurring event UX flows, and pipeline integration
 
 ## Progress
 
@@ -108,9 +106,9 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
 | 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
 | 3. Multi-User & Polish                | 2/2            | Complete    | 2026-02-15 |
-| 4. Advanced Features                  | 0/3            | In progress | -          |
+| 4. Advanced Features                  | 0/2            | Not started | -          |
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-16 — Phase 4 planned (3 plans in 2 waves)_
+_Last updated: 2026-02-16 — Phase 4 replanned (2 plans in 2 waves, reminders deferred)_
