@@ -617,6 +617,9 @@ async function handleIntent(
 export function setupMessageListener(deps: MessageListenerDeps): void {
   logger.info("Setting up Signal message listener");
 
+  // Track recent rejection messages to prevent spam loops
+  const recentRejections = new Map<string, number>();
+
   // Register the message event handler
   // signal-sdk emits response.params which wraps envelope: { envelope: {...} }
   deps.signalClient.on("message", async (params: any) => {
@@ -629,6 +632,12 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
 
       // Extract envelope — signal-sdk wraps it in { envelope: {...} }
       const envelope: SignalEnvelope = params?.envelope || params;
+
+      // Ignore sync messages (our own sent messages echoed back)
+      if (envelope.syncMessage || !envelope.dataMessage) {
+        logger.debug("Ignoring sync/non-data message");
+        return;
+      }
 
       // Extract message data from envelope
       phoneNumber = envelope.source || envelope.sourceNumber;
@@ -645,14 +654,19 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         "Received Signal message",
       );
 
-      // Access control - reject unknown senders
+      // Access control - reject unknown senders (send rejection at most once per 5 minutes)
       if (!deps.familyWhitelist.isAllowed(phoneNumber)) {
         logger.warn({ phoneNumber }, "Message from unknown sender rejected");
-        await sendSignalMessage(
-          deps.signalClient,
-          phoneNumber,
-          "Entschuldigung, ich bin ein privater Familienbot und kann nur mit registrierten Familienmitgliedern kommunizieren.",
-        );
+        const lastRejection = recentRejections.get(phoneNumber) || 0;
+        const now = Date.now();
+        if (now - lastRejection > 5 * 60 * 1000) {
+          recentRejections.set(phoneNumber, now);
+          await sendSignalMessage(
+            deps.signalClient,
+            phoneNumber,
+            "Entschuldigung, ich bin ein privater Familienbot und kann nur mit registrierten Familienmitgliedern kommunizieren.",
+          );
+        }
         return;
       }
 
