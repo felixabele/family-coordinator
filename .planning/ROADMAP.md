@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Signal Infrastructure** - Signal messaging, conversation state, and Claude integration
 - [x] **Phase 2: Calendar Integration & CRUD** - Google Calendar connection with full create/read/update/delete operations
 - [x] **Phase 3: Multi-User & Polish** - Multi-user coordination and UX improvements
-- [ ] **Phase 4: Advanced Features** - Event reminders, recurring events, and smart date parsing
+- [x] **Phase 4: Advanced Features** - Event reminders, recurring events, and smart date parsing
 
 ## Phase Details
 
@@ -93,22 +93,22 @@ Plans:
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Recurring event types, RRULE formatting, and enhanced German date parsing prompt
-- [ ] 04-03-PLAN.md — Conflict detection, recurring event UX flows, and pipeline integration
+- [x] 04-01-PLAN.md — Recurring event types, RRULE formatting, and enhanced German date parsing prompt
+- [x] 04-03-PLAN.md — Conflict detection, recurring event UX flows, and pipeline integration
 
 ## Progress
 
 **Execution Order:**
 Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
-| Phase                                 | Plans Complete | Status      | Completed  |
-| ------------------------------------- | -------------- | ----------- | ---------- |
-| 1. Foundation & Signal Infrastructure | 3/3            | Complete    | 2026-02-14 |
-| 2. Calendar Integration & CRUD        | 2/2            | Complete    | 2026-02-14 |
-| 3. Multi-User & Polish                | 2/2            | Complete    | 2026-02-15 |
-| 4. Advanced Features                  | 0/2            | Not started | -          |
+| Phase                                 | Plans Complete | Status   | Completed  |
+| ------------------------------------- | -------------- | -------- | ---------- |
+| 1. Foundation & Signal Infrastructure | 3/3            | Complete | 2026-02-14 |
+| 2. Calendar Integration & CRUD        | 2/2            | Complete | 2026-02-14 |
+| 3. Multi-User & Polish                | 2/2            | Complete | 2026-02-15 |
+| 4. Advanced Features                  | 2/2            | Complete | 2026-02-16 |
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-16 — Phase 4 replanned (2 plans in 2 waves, reminders deferred)_
+_Last updated: 2026-02-16 — Phase 4 complete (recurring events, conflict detection, German date parsing)_
