@@ -15,6 +15,7 @@ import {
   CalendarEvent,
   CalendarError,
   CreateEventInput,
+  CreateRecurringEventInput,
 } from "../calendar/types.js";
 import {
   listEvents,
@@ -22,12 +23,14 @@ import {
   createEvent,
   updateEvent,
   deleteEvent,
+  createRecurringEvent,
 } from "../calendar/operations.js";
 import {
   inferEventDate,
   formatEventTime,
   formatDayName,
   formatEventDate,
+  createEventDateTime,
   createEventEndDateTime,
 } from "../calendar/timezone.js";
 import { DateTime } from "luxon";
@@ -37,6 +40,11 @@ import { IdempotencyStore } from "../state/idempotency.js";
 import { extractIntent } from "../llm/intent.js";
 import { logger } from "../utils/logger.js";
 import { HELP_TEXT } from "../config/constants.js";
+import { findConflicts } from "../calendar/conflicts.js";
+import {
+  calculateNextOccurrences,
+  trimRecurringEvent,
+} from "../calendar/recurring.js";
 
 /**
  * Dependencies for the message listener
@@ -101,8 +109,140 @@ async function handleIntent(
   intent: CalendarIntent,
   deps: MessageListenerDeps,
   memberName?: string,
+  phoneNumber?: string,
 ): Promise<string> {
   const tz = deps.calendarClient.timezone;
+
+  // Check for pending conflict confirmation
+  if (phoneNumber) {
+    const state = await deps.conversationStore.getState(phoneNumber);
+
+    if (state?.currentIntent === "awaiting_conflict_confirmation") {
+      const userResponse = intent.entities.title?.toLowerCase() || "";
+      const isAffirmative =
+        userResponse.includes("ja") ||
+        userResponse.includes("ok") ||
+        userResponse.includes("trotzdem") ||
+        userResponse.includes("yes") ||
+        userResponse.includes("klar") ||
+        userResponse.includes("mach");
+
+      if (isAffirmative) {
+        // Retrieve pending event and create it
+        const pendingEvent =
+          state.pendingEntities as unknown as CreateEventInput & {
+            recurrence?: any;
+          };
+
+        let confirmationMessage: string;
+
+        // Check if it's a recurring event
+        if (pendingEvent.recurrence) {
+          const recurringInput: CreateRecurringEventInput = {
+            summary: pendingEvent.summary,
+            date: pendingEvent.date,
+            time: pendingEvent.time,
+            durationMinutes: pendingEvent.durationMinutes || 60,
+            recurrence: {
+              frequency: pendingEvent.recurrence.frequency,
+              dayOfWeek: pendingEvent.recurrence.day_of_week,
+              endDate: pendingEvent.recurrence.end_date,
+            },
+          };
+
+          const { event, nextOccurrences } = await createRecurringEvent(
+            deps.calendarClient,
+            recurringInput,
+          );
+
+          // Build frequency pattern in German
+          let pattern: string;
+          if (pendingEvent.recurrence.frequency === "DAILY") {
+            pattern = "täglich";
+          } else if (pendingEvent.recurrence.frequency === "WEEKLY") {
+            const dayMap: Record<string, string> = {
+              MO: "Montag",
+              TU: "Dienstag",
+              WE: "Mittwoch",
+              TH: "Donnerstag",
+              FR: "Freitag",
+              SA: "Samstag",
+              SU: "Sonntag",
+            };
+            const day = pendingEvent.recurrence.day_of_week;
+            pattern = day ? `jeden ${dayMap[day]}` : "wöchentlich";
+          } else {
+            pattern = "monatlich";
+          }
+
+          const time = formatEventTime(event.startTime, tz);
+          confirmationMessage = `${event.summary} ${pattern} um ${time} erstellt. Nächste: ${nextOccurrences.join(", ")}`;
+
+          if (pendingEvent.recurrence.end_date) {
+            const endDate = DateTime.fromISO(pendingEvent.recurrence.end_date, {
+              zone: tz,
+            });
+            confirmationMessage += ` Endet: ${endDate.toFormat("dd.MM.yyyy")}`;
+          }
+        } else {
+          // Regular event
+          const createdEvent = await createEvent(
+            deps.calendarClient,
+            pendingEvent,
+          );
+          const formattedDay = formatDayName(pendingEvent.date, tz);
+          const formattedTime = formatEventTime(createdEvent.startTime, tz);
+          const formattedEndTime = formatEventTime(createdEvent.endTime, tz);
+          confirmationMessage = `Klar, hab ich eingetragen! ${pendingEvent.summary}, ${formattedDay} ${formattedTime}-${formattedEndTime}`;
+        }
+
+        await deps.conversationStore.clearState(phoneNumber);
+        return confirmationMessage;
+      } else {
+        // User declined
+        await deps.conversationStore.clearState(phoneNumber);
+        return "Alles klar, Termin wurde nicht erstellt.";
+      }
+    }
+
+    // Check for pending delete scope confirmation
+    if (state?.currentIntent === "awaiting_delete_scope") {
+      const userResponse = intent.entities.title?.toLowerCase() || "";
+      const isThisOnly =
+        userResponse.includes("1") ||
+        userResponse.includes("dieses") ||
+        userResponse.includes("nur");
+      const isAllFuture =
+        userResponse.includes("2") ||
+        userResponse.includes("alle") ||
+        userResponse.includes("zukünftige");
+
+      if (isThisOnly) {
+        // Delete single instance
+        const eventId = state.pendingEntities.eventId as string;
+        await deleteEvent(deps.calendarClient, eventId);
+        await deps.conversationStore.clearState(phoneNumber);
+        return "Erledigt! Nur dieser Termin wurde gelöscht.";
+      } else if (isAllFuture) {
+        // Delete all future instances
+        const recurringEventId = state.pendingEntities
+          .recurringEventId as string;
+        const instanceStartDate = state.pendingEntities
+          .instanceStartDate as string;
+        await trimRecurringEvent(
+          deps.calendarClient,
+          recurringEventId,
+          instanceStartDate,
+          tz,
+        );
+        const instanceDate = DateTime.fromISO(instanceStartDate, { zone: tz });
+        await deps.conversationStore.clearState(phoneNumber);
+        return `Alle zukünftigen Termine ab ${instanceDate.toFormat("dd.MM.")} gelöscht.`;
+      } else {
+        return "Bitte wähl 1 für nur diesen Termin oder 2 für alle zukünftigen.";
+      }
+    }
+  }
 
   try {
     switch (intent.intent) {
@@ -175,6 +315,44 @@ async function handleIntent(
           durationMinutes = intent.entities.duration_minutes;
         }
 
+        // Calculate start/end times for conflict detection
+        const startDt = createEventDateTime(date, time, tz);
+        const endDt = createEventEndDateTime(date, time, durationMinutes, tz);
+
+        // Check for conflicts
+        const conflicts = await findConflicts(deps.calendarClient, {
+          start: startDt.dateTime,
+          end: endDt.dateTime,
+        });
+
+        if (conflicts.length > 0 && phoneNumber) {
+          // Format conflict list in German
+          const conflictList = conflicts
+            .map((conflict) => {
+              const conflictTime = formatEventTime(conflict.startTime, tz);
+              return `${conflict.summary} um ${conflictTime} Uhr`;
+            })
+            .join(", ");
+
+          // Save pending event in conversation state
+          await deps.conversationStore.saveState({
+            phoneNumber,
+            currentIntent: "awaiting_conflict_confirmation",
+            pendingEntities: {
+              summary: title,
+              date,
+              time,
+              durationMinutes,
+              recurrence: intent.entities.recurrence,
+            },
+            messageHistory: [],
+            lastMessageAt: new Date(),
+          });
+
+          return `Achtung: Überschneidung mit ${conflictList}. Trotzdem erstellen?`;
+        }
+
+        // No conflicts - proceed with creation
         const eventInput: CreateEventInput = {
           summary: title,
           date,
@@ -182,6 +360,57 @@ async function handleIntent(
           durationMinutes,
         };
 
+        // Check if it's a recurring event
+        if (intent.entities.recurrence) {
+          const recurringInput: CreateRecurringEventInput = {
+            ...eventInput,
+            recurrence: {
+              frequency: intent.entities.recurrence.frequency,
+              dayOfWeek: intent.entities.recurrence.day_of_week,
+              endDate: intent.entities.recurrence.end_date,
+            },
+          };
+
+          const { event, nextOccurrences } = await createRecurringEvent(
+            deps.calendarClient,
+            recurringInput,
+          );
+
+          // Build frequency pattern in German
+          let pattern: string;
+          if (intent.entities.recurrence.frequency === "DAILY") {
+            pattern = "täglich";
+          } else if (intent.entities.recurrence.frequency === "WEEKLY") {
+            const dayMap: Record<string, string> = {
+              MO: "Montag",
+              TU: "Dienstag",
+              WE: "Mittwoch",
+              TH: "Donnerstag",
+              FR: "Freitag",
+              SA: "Samstag",
+              SU: "Sonntag",
+            };
+            const day = intent.entities.recurrence.day_of_week;
+            pattern = day ? `jeden ${dayMap[day]}` : "wöchentlich";
+          } else {
+            pattern = "monatlich";
+          }
+
+          const formattedTime = formatEventTime(event.startTime, tz);
+          let confirmationMessage = `${title} ${pattern} um ${formattedTime} erstellt. Nächste: ${nextOccurrences.join(", ")}`;
+
+          if (intent.entities.recurrence.end_date) {
+            const endDate = DateTime.fromISO(
+              intent.entities.recurrence.end_date,
+              { zone: tz },
+            );
+            confirmationMessage += ` Endet: ${endDate.toFormat("dd.MM.yyyy")}`;
+          }
+
+          return confirmationMessage;
+        }
+
+        // Regular event creation
         const createdEvent = await createEvent(deps.calendarClient, eventInput);
 
         // Format confirmation
@@ -307,8 +536,28 @@ async function handleIntent(
           return `Welchen meinst du?\n${options}`;
         }
 
-        // Single event found - delete it
+        // Single event found
         const event = searchResult.event;
+
+        // Check if it's a recurring event instance
+        if (event.recurringEventId && phoneNumber) {
+          // Ask user for deletion scope
+          await deps.conversationStore.saveState({
+            phoneNumber,
+            currentIntent: "awaiting_delete_scope",
+            pendingEntities: {
+              eventId: event.id,
+              recurringEventId: event.recurringEventId,
+              instanceStartDate: event.startTime,
+            },
+            messageHistory: [],
+            lastMessageAt: new Date(),
+          });
+
+          return `Das ist ein wiederkehrender Termin. Nur dieses Mal oder alle zukünftigen löschen?\n1) Nur dieses Mal\n2) Alle zukünftigen`;
+        }
+
+        // Regular event - delete it
         await deleteEvent(deps.calendarClient, event.id);
 
         // Format confirmation
@@ -472,7 +721,12 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       const memberName = deps.familyWhitelist.getName(phoneNumber);
 
       // Handle intent with calendar operations
-      const response = await handleIntent(intent, deps, memberName);
+      const response = await handleIntent(
+        intent,
+        deps,
+        memberName,
+        phoneNumber,
+      );
 
       // Send response via Signal
       await sendSignalMessage(deps.signalClient, phoneNumber, response);
