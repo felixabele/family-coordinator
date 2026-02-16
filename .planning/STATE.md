@@ -11,7 +11,7 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 Milestone: v1.0 MVP — SHIPPED
 Status: All 4 phases complete, milestone archived
-Last activity: 2026-02-16 — v1.0 milestone completed
+Last activity: 2026-02-16 — Completed quick task 2: Fix weekend query returning Sunday+Monday instead of Saturday+Sunday
 
 Progress: [██████████] 100%
 
