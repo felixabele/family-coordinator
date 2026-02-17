@@ -507,6 +507,14 @@ async function handleIntent(
           intent.entities.date ||
           DateTime.now().setZone(tz).toFormat("yyyy-MM-dd");
 
+        // Determine search date end (30 days if no date specified)
+        const searchDateEnd = intent.entities.date
+          ? undefined
+          : DateTime.now()
+              .setZone(tz)
+              .plus({ days: 30 })
+              .toFormat("yyyy-MM-dd");
+
         // Find events
         const searchQuery =
           intent.entities.event_search_query || intent.entities.title;
@@ -514,6 +522,7 @@ async function handleIntent(
           deps.calendarClient,
           searchDate,
           searchQuery,
+          searchDateEnd,
         );
 
         if ("notFound" in searchResult) {
@@ -582,6 +591,14 @@ async function handleIntent(
           intent.entities.date ||
           DateTime.now().setZone(tz).toFormat("yyyy-MM-dd");
 
+        // Determine search date end (30 days if no date specified)
+        const searchDateEnd = intent.entities.date
+          ? undefined
+          : DateTime.now()
+              .setZone(tz)
+              .plus({ days: 30 })
+              .toFormat("yyyy-MM-dd");
+
         // Find events
         const searchQuery =
           intent.entities.event_search_query || intent.entities.title;
@@ -589,6 +606,7 @@ async function handleIntent(
           deps.calendarClient,
           searchDate,
           searchQuery,
+          searchDateEnd,
         );
 
         if ("notFound" in searchResult) {
