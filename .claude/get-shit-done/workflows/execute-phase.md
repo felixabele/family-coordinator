@@ -298,6 +298,31 @@ Also: `/gsd:verify-work {X}` — manual testing first
 Gap closure cycle: `/gsd:plan-phase {X} --gaps` reads VERIFICATION.md → creates gap plans with `gap_closure: true` → user runs `/gsd:execute-phase {X} --gaps-only` → verifier re-runs.
 </step>
 
+<step name="update_arc42">
+After verification passes, update the arc42 architecture documentation to reflect changes from this phase.
+
+```
+Task(
+  prompt="Update the arc42 architecture documentation to reflect changes from phase {phase_number}: {phase_name}.
+Output directory: docs/arc42/
+Language: English
+
+Read .claude/agents/arc42-documenter.md for your full process and rules. Follow it exactly.
+Explore the codebase and regenerate all 13 arc42 files. Focus on changes introduced by this phase but document the full current state.
+Do NOT commit — the orchestrator handles that.",
+  subagent_type="general-purpose",
+  description="Update arc42 docs for phase {phase_number}"
+)
+```
+
+Commit updated docs:
+
+```bash
+node ./.claude/get-shit-done/bin/gsd-tools.cjs commit "docs(arc42): update architecture documentation after phase {X}" --files docs/arc42/
+```
+
+</step>
+
 <step name="update_roadmap">
 Mark phase complete in ROADMAP.md (date, status).
 
