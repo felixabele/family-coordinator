@@ -167,7 +167,23 @@ Beispiele:
 
 ## Regeln für create_event
 
-Wenn keine Uhrzeit für create_event angegeben ist:
+### Mehrtägige Events (WICHTIG)
+
+Wenn ein Benutzer einen Termin über mehrere Tage erstellt (z.B. "Urlaub vom 5. bis 10. März", "Ferien 20. bis 28. Dezember", "Konferenz von Montag bis Mittwoch"):
+- Setze all_day: true
+- Setze date: Startdatum im Format YYYY-MM-DD
+- Setze date_end: Enddatum im Format YYYY-MM-DD (letzter Tag des Events)
+- NICHT nach einer Uhrzeit fragen
+- Confidence normal setzen (0.9+), NICHT auf < 0.7 setzen
+- time NICHT setzen
+
+Beispiele:
+- "Trag Urlaub vom 5. bis 10. März ein" -> intent: create_event, entities: {title: "Urlaub", date: "2026-03-05", date_end: "2026-03-10", all_day: true}, confidence: 0.95
+- "Konferenz nächste Woche Montag bis Mittwoch" -> intent: create_event, entities: {title: "Konferenz", date: "2026-02-23", date_end: "2026-02-25", all_day: true}, confidence: 0.9
+
+### Eintägige Events ohne Uhrzeit
+
+Wenn keine Uhrzeit für einen EINZELNEN Tag angegeben ist:
 - Setze confidence < 0.7
 - Frage in clarification_needed nach der Uhrzeit in deutscher du-form
 - Beispiel: "Zu welcher Uhrzeit soll ich das eintragen?"
@@ -231,6 +247,12 @@ Confidence: 0.75
 Benutzer: "Trag Meeting Mittwoch von 14 bis 16 Uhr ein"
 Intent: create_event
 Entities: { title: "Meeting", date: "2024-01-17", time: "14:00", end_time: "16:00" }
+Confidence: 0.95
+
+**Beispiel 9: Mehrtägiger Ganztags-Event**
+Benutzer: "Trag Urlaub vom 5. bis 10. März ein"
+Intent: create_event
+Entities: { title: "Urlaub", date: "2026-03-05", date_end: "2026-03-10", all_day: true }
 Confidence: 0.95
 
 ## Wichtige Hinweise

@@ -16,6 +16,7 @@ import {
   CalendarError,
   CreateEventInput,
   CreateRecurringEventInput,
+  CreateAllDayEventInput,
 } from "../calendar/types.js";
 import {
   listEvents,
@@ -24,6 +25,7 @@ import {
   updateEvent,
   deleteEvent,
   createRecurringEvent,
+  createAllDayEvent,
 } from "../calendar/operations.js";
 import {
   inferEventDate,
@@ -320,6 +322,43 @@ async function handleIntent(
             intent.clarification_needed ||
             "Das hab ich nicht ganz verstanden. Schreib mir einfach, was du mit dem Kalender machen möchtest!"
           );
+        }
+
+        // Handle all-day / multi-day events
+        if (
+          intent.entities.all_day &&
+          intent.entities.date &&
+          intent.entities.date_end
+        ) {
+          const title = intent.entities.title || "Termin";
+          const startDate = intent.entities.date;
+          const endDateRaw = intent.entities.date_end;
+
+          // Google Calendar exclusive end date: add 1 day to the user's end date
+          const endDateExclusive = DateTime.fromISO(endDateRaw, { zone: tz })
+            .plus({ days: 1 })
+            .toFormat("yyyy-MM-dd");
+
+          const allDayInput: CreateAllDayEventInput = {
+            summary: title,
+            startDate,
+            endDate: endDateExclusive,
+          };
+
+          const createdEvent = await createAllDayEvent(
+            deps.calendarClient,
+            allDayInput,
+          );
+
+          // Format confirmation with date range
+          const startFormatted = DateTime.fromISO(startDate, { zone: tz })
+            .setLocale("de")
+            .toFormat("d. MMM");
+          const endFormatted = DateTime.fromISO(endDateRaw, { zone: tz })
+            .setLocale("de")
+            .toFormat("d. MMM");
+
+          return `Klar, hab ich eingetragen! ${title}, ${startFormatted} bis ${endFormatted} (ganztägig)`;
         }
 
         // Check for missing time
