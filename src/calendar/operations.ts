@@ -101,15 +101,20 @@ export async function findEvents(
   client: CalendarClient,
   date: string,
   titleHint?: string,
+  dateEnd?: string,
 ): Promise<EventSearchResult> {
   const dayStart = DateTime.fromFormat(date, "yyyy-MM-dd", {
     zone: client.timezone,
   }).startOf("day");
-  const dayEnd = dayStart.endOf("day");
+  const dayEnd = dateEnd
+    ? DateTime.fromFormat(dateEnd, "yyyy-MM-dd", {
+        zone: client.timezone,
+      }).endOf("day")
+    : dayStart.endOf("day");
 
   try {
     logger.info(
-      { calendarId: client.calendarId, date, titleHint },
+      { calendarId: client.calendarId, date, titleHint, dateEnd },
       "Finding calendar events",
     );
 
@@ -139,7 +144,7 @@ export async function findEvents(
 
     if (events.length === 0) {
       logger.info(
-        { calendarId: client.calendarId, date, titleHint },
+        { calendarId: client.calendarId, date, titleHint, dateEnd },
         "No events found",
       );
       return { notFound: true };
@@ -151,6 +156,7 @@ export async function findEvents(
           calendarId: client.calendarId,
           date,
           titleHint,
+          dateEnd,
           eventId: events[0].id,
         },
         "Single event found",
@@ -159,7 +165,13 @@ export async function findEvents(
     }
 
     logger.info(
-      { calendarId: client.calendarId, date, titleHint, count: events.length },
+      {
+        calendarId: client.calendarId,
+        date,
+        titleHint,
+        dateEnd,
+        count: events.length,
+      },
       "Multiple events found",
     );
     return { candidates: events };
@@ -181,7 +193,7 @@ export async function findEvents(
     }
 
     logger.error(
-      { error, calendarId: client.calendarId, date, titleHint },
+      { error, calendarId: client.calendarId, date, titleHint, dateEnd },
       "Failed to find events",
     );
     throw new CalendarError("API_ERROR", "Failed to find calendar events");
