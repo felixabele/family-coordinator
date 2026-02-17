@@ -1,5 +1,5 @@
 ---
-phase: 01-deployment
+phase: 05-deployment
 verified: 2026-02-16T19:50:09Z
 status: human_needed
 score: 0/5 truths verified (all require VPS access)

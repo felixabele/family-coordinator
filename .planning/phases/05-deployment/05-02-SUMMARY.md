@@ -1,5 +1,5 @@
 ---
-phase: 01-deployment
+phase: 05-deployment
 plan: 02
 subsystem: deployment
 tags: [deployment, vps, production, signal-cli, postgresql, pm2]
@@ -215,7 +215,7 @@ Production deployment complete. The Family Coordinator Signal bot is now:
 - Backed up daily
 - Monitoring-ready via health endpoint
 
-Phase 01-deployment is now complete. All deployment infrastructure and production deployment verified.
+Phase 05-deployment is now complete. All deployment infrastructure and production deployment verified.
 
 ## Self-Check: PASSED
 
