@@ -42,14 +42,14 @@ Plans:
 
 **Goal:** Automate code validation and production deployment with GitHub Actions -- CI validates formatting, type safety, and tests on every push/PR; CD deploys to VPS via SSH on main merge with concurrency controls protecting Signal bot state.
 **Depends on:** Phase 5
-**Plans:** 2 plans
+**Plans:** 2 plans — completed 2026-02-17
 
 Plans:
 
-- [ ] 06-01-PLAN.md -- CI validation pipeline (format check, typecheck, tests) + dependency review
-- [ ] 06-02-PLAN.md -- Production deployment workflow with health check verification
+- [x] 06-01-PLAN.md -- CI validation pipeline (format check, typecheck, tests) + dependency review
+- [x] 06-02-PLAN.md -- Production deployment workflow with health check verification
 
 ---
 
 _Roadmap created: 2026-02-13_
-_Last updated: 2026-02-17 — Phase 5 Deployment renumbered from Phase 1_
+_Last updated: 2026-02-17 — Phase 6 GitHub CI/CD Pipeline complete_
