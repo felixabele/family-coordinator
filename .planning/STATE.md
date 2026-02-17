@@ -81,20 +81,21 @@ None — clean slate for next milestone.
 
 ### Quick Tasks Completed
 
-| #   | Description                                                  | Date       | Commit  | Directory                                                                       |
-| --- | ------------------------------------------------------------ | ---------- | ------- | ------------------------------------------------------------------------------- |
-| 1   | Weekend query returns both Saturday and Sunday events        | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/)          |
-| 2   | Fix weekend query returning Sunday+Monday instead of Sat+Sun | 2026-02-16 | 113cf46 | [2-fix-weekend-query](./quick/2-fix-weekend-query-returning-sunday-monda/)      |
-| 3   | Fix group chat replies going to 1-to-1 instead of group      | 2026-02-17 | 5340202 | [3-fix-group-chat-replies](./quick/3-fix-group-chat-replies-going-to-1-to-1-i/) |
-| 4   | Multi-day events should default to all-day                   | 2026-02-17 | ad2309f | [4-multi-day-events](./quick/4-multi-day-events-should-default-to-all-d/)       |
+| #   | Description                                                  | Date       | Commit  | Directory                                                                                             |
+| --- | ------------------------------------------------------------ | ---------- | ------- | ----------------------------------------------------------------------------------------------------- |
+| 1   | Weekend query returns both Saturday and Sunday events        | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/)                                |
+| 2   | Fix weekend query returning Sunday+Monday instead of Sat+Sun | 2026-02-16 | 113cf46 | [2-fix-weekend-query](./quick/2-fix-weekend-query-returning-sunday-monda/)                            |
+| 3   | Fix group chat replies going to 1-to-1 instead of group      | 2026-02-17 | 5340202 | [3-fix-group-chat-replies](./quick/3-fix-group-chat-replies-going-to-1-to-1-i/)                       |
+| 4   | Multi-day events should default to all-day                   | 2026-02-17 | ad2309f | [4-multi-day-events](./quick/4-multi-day-events-should-default-to-all-d/)                             |
+| 5   | Fix delete/update event not finding events without date      | 2026-02-17 | 645d4e7 | [5-fix-delete-event](./quick/5-fix-delete-event-not-finding-events-when/5-fix-delete-event-not-find/) |
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed quick task 4 (Multi-day events default to all-day)
+Stopped at: Completed quick task 5 (Delete/update searches 30 days when no date)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-17 — Completed quick task 4: Multi-day events default to all-day_
+_Last updated: 2026-02-17 — Completed quick task 5: Delete/update searches 30 days when no date_
