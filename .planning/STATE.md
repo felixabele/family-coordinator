@@ -11,9 +11,9 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 Milestone: Phase 6 - GitHub CI/CD Pipeline
 Current Phase: 06-github-ci-cd-pipeline
-Current Plan: 1 (of 1)
+Current Plan: 2 (of 2)
 Status: Complete
-Last activity: 2026-02-17 — Completed 06-01-PLAN.md: CI validation pipeline
+Last activity: 2026-02-17 — Completed 06-02-PLAN.md: Production deployment workflow
 
 Progress: [██████████] 100%
 
@@ -35,15 +35,23 @@ Progress: [██████████] 100%
 
 **Phase 06-github-ci-cd-pipeline Metrics:**
 
-| Plan  | Name                   | Duration | Completed           | Tasks | Files | Commits |
-| ----- | ---------------------- | -------- | ------------------- | ----- | ----- | ------- |
-| 06-01 | CI validation pipeline | 0.8 min  | 2026-02-17 06:42:12 | 2     | 3     | 2       |
+| Plan  | Name                           | Duration | Completed           | Tasks | Files | Commits |
+| ----- | ------------------------------ | -------- | ------------------- | ----- | ----- | ------- |
+| 06-01 | CI validation pipeline         | 0.8 min  | 2026-02-17 06:42:12 | 2     | 3     | 2       |
+| 06-02 | Production deployment workflow | 1.0 min  | 2026-02-17 06:45:14 | 2     | 2     | 2       |
 
 _Updated after each plan completion_
 
 ## Accumulated Context
 
 ### Decisions
+
+**Phase 06-github-ci-cd-pipeline:**
+
+- Use appleboy/ssh-action for VPS deployment (02-02)
+- Set cancel-in-progress: false for deployment concurrency to protect Signal bot state (02-02)
+- Add health check to deploy.sh script for both automated and manual deployments (02-02)
+- Use GitHub environment 'production' for secret isolation and branch protection (02-02)
 
 **Phase 05-deployment:**
 
@@ -82,10 +90,10 @@ None — clean slate for next milestone.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 06-01-PLAN.md (CI validation pipeline)
+Stopped at: Completed 06-02-PLAN.md (Production deployment workflow)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-17 — Completed 06-01-PLAN.md (CI validation pipeline)_
+_Last updated: 2026-02-17 — Completed 06-02-PLAN.md (Production deployment workflow)_
