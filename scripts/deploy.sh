@@ -12,7 +12,7 @@ echo "2. Installing dependencies..."
 npm ci --omit=dev
 
 echo "3. Running database migrations..."
-node --env-file=.env.production --experimental-strip-types src/db/migrate.ts
+tsx --env-file=.env.production src/db/migrate.ts
 
 echo "4. Restarting application..."
 pm2 restart ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs
