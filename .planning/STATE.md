@@ -86,14 +86,15 @@ None — clean slate for next milestone.
 | 1   | Weekend query returns both Saturday and Sunday events        | 2026-02-16 | fc04d26 | [1-weekend-query](./quick/1-weekend-query-returns-both-saturday-and-/)          |
 | 2   | Fix weekend query returning Sunday+Monday instead of Sat+Sun | 2026-02-16 | 113cf46 | [2-fix-weekend-query](./quick/2-fix-weekend-query-returning-sunday-monda/)      |
 | 3   | Fix group chat replies going to 1-to-1 instead of group      | 2026-02-17 | 5340202 | [3-fix-group-chat-replies](./quick/3-fix-group-chat-replies-going-to-1-to-1-i/) |
+| 4   | Multi-day events should default to all-day                   | 2026-02-17 | ad2309f | [4-multi-day-events](./quick/4-multi-day-events-should-default-to-all-d/)       |
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed 06-02-PLAN.md (Production deployment workflow)
+Stopped at: Completed quick task 4 (Multi-day events default to all-day)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-17 — Completed 06-02-PLAN.md (Production deployment workflow)_
+_Last updated: 2026-02-17 — Completed quick task 4: Multi-day events default to all-day_
