@@ -38,6 +38,17 @@ Plans:
 - [x] 05-01-PLAN.md — Health check endpoint, PM2 config, deploy script, backup script
 - [ ] 05-02-PLAN.md — VPS deployment and verification checkpoint
 
+### Phase 6: GitHub CI/CD Pipeline
+
+**Goal:** Automate code validation and production deployment with GitHub Actions -- CI validates formatting, type safety, and tests on every push/PR; CD deploys to VPS via SSH on main merge with concurrency controls protecting Signal bot state.
+**Depends on:** Phase 5
+**Plans:** 2 plans
+
+Plans:
+
+- [ ] 06-01-PLAN.md -- CI validation pipeline (format check, typecheck, tests) + dependency review
+- [ ] 06-02-PLAN.md -- Production deployment workflow with health check verification
+
 ---
 
 _Roadmap created: 2026-02-13_
