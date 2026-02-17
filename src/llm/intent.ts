@@ -54,7 +54,7 @@ const calendarIntentTool: Anthropic.Tool = {
           date_end: {
             type: "string",
             description:
-              "End date in YYYY-MM-DD format for multi-day queries (e.g., weekend = Saturday to Sunday). Only for query_events.",
+              "End date in YYYY-MM-DD format for multi-day events or queries (e.g., 'Urlaub vom 5. bis 10. Marz', weekend queries)",
           },
           time: {
             type: "string",
@@ -96,6 +96,11 @@ const calendarIntentTool: Anthropic.Tool = {
             },
             description:
               "Recurring event pattern. Only set when user explicitly requests repetition (jeden, täglich, wöchentlich, monatlich).",
+          },
+          all_day: {
+            type: "boolean",
+            description:
+              "True for all-day events (no specific time). Set automatically for multi-day date ranges.",
           },
         },
         description: "Extracted calendar entities",

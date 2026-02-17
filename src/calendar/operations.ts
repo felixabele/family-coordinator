@@ -10,6 +10,7 @@ import {
   UpdateEventInput,
   EventSearchResult,
   CreateRecurringEventInput,
+  CreateAllDayEventInput,
 } from "./types.js";
 import {
   createEventDateTime,
@@ -184,6 +185,85 @@ export async function findEvents(
       "Failed to find events",
     );
     throw new CalendarError("API_ERROR", "Failed to find calendar events");
+  }
+}
+
+/**
+ * Create a new all-day calendar event.
+ */
+export async function createAllDayEvent(
+  client: CalendarClient,
+  input: CreateAllDayEventInput,
+): Promise<CalendarEvent> {
+  try {
+    logger.info(
+      {
+        calendarId: client.calendarId,
+        summary: input.summary,
+        startDate: input.startDate,
+        endDate: input.endDate,
+      },
+      "Creating all-day calendar event",
+    );
+
+    const response = await client.calendar.events.insert({
+      calendarId: client.calendarId,
+      requestBody: {
+        summary: input.summary,
+        description: input.description,
+        start: { date: input.startDate },
+        end: { date: input.endDate },
+      },
+    });
+
+    const item = response.data;
+    const isAllDay = !!item.start?.date;
+
+    const event: CalendarEvent = {
+      id: item.id!,
+      summary: item.summary || "(No title)",
+      startTime: item.start?.dateTime || item.start?.date || "",
+      endTime: item.end?.dateTime || item.end?.date || "",
+      isAllDay,
+      description: item.description || undefined,
+      recurringEventId: item.recurringEventId || undefined,
+    };
+
+    logger.info(
+      {
+        calendarId: client.calendarId,
+        eventId: event.id,
+        summary: input.summary,
+      },
+      "All-day event created successfully",
+    );
+
+    return event;
+  } catch (error: unknown) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const code = (error as { code?: number }).code;
+      if (code === 403) {
+        throw new CalendarError(
+          "PERMISSION_DENIED",
+          "Calendar access denied. Check service account permissions.",
+        );
+      }
+      if (code === 429) {
+        throw new CalendarError(
+          "RATE_LIMITED",
+          "Calendar API rate limit exceeded.",
+        );
+      }
+    }
+
+    logger.error(
+      { error, calendarId: client.calendarId, input },
+      "Failed to create all-day event",
+    );
+    throw new CalendarError(
+      "API_ERROR",
+      "Failed to create all-day calendar event",
+    );
   }
 }
 

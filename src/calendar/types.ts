@@ -28,6 +28,13 @@ export interface CreateRecurringEventInput extends CreateEventInput {
   };
 }
 
+export interface CreateAllDayEventInput {
+  summary: string;
+  startDate: string; // YYYY-MM-DD (first day)
+  endDate: string; // YYYY-MM-DD (day AFTER last day — Google Calendar convention)
+  description?: string;
+}
+
 export interface UpdateEventInput {
   eventId: string;
   summary?: string;

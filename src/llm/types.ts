@@ -37,6 +37,7 @@ export interface CalendarEntities {
   end_time?: string; // HH:mm format for explicit end times
   event_search_query?: string; // Search text for update/delete operations
   recurrence?: RecurrenceEntities;
+  all_day?: boolean; // True for all-day events (no specific time)
 }
 
 /**
@@ -67,6 +68,7 @@ export const CalendarEntitiesSchema = z.object({
   end_time: z.string().optional(),
   event_search_query: z.string().optional(),
   recurrence: RecurrenceEntitiesSchema.optional(),
+  all_day: z.boolean().optional(),
 });
 
 export const CalendarIntentSchema = z.object({
