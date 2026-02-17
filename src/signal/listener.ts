@@ -78,11 +78,13 @@ function detectCommand(text: string): "help" | "cancel" | null {
  *
  * @param command - Command type
  * @param phoneNumber - Sender phone number
+ * @param replyTo - Where to send the response (groupId or phoneNumber)
  * @param deps - Dependencies
  */
 async function handleCommand(
   command: "help" | "cancel",
   phoneNumber: string,
+  replyTo: string,
   deps: MessageListenerDeps,
 ): Promise<void> {
   // Always reset conversation state on any command
@@ -91,7 +93,7 @@ async function handleCommand(
   const response =
     command === "help" ? HELP_TEXT : "Alles klar, was kann ich für dich tun?";
 
-  await sendSignalMessage(deps.signalClient, phoneNumber, response);
+  await sendSignalMessage(deps.signalClient, replyTo, response);
   logger.info({ phoneNumber, command }, "Command executed, state reset");
 }
 
@@ -656,6 +658,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
   deps.signalClient.on("message", async (params: any) => {
     let phoneNumber: string | undefined;
     let messageId: string | undefined;
+    let replyTo: string | undefined;
 
     try {
       // Log raw params to understand the structure
@@ -674,6 +677,10 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       phoneNumber = envelope.source || envelope.sourceNumber;
       messageId = envelope.timestamp?.toString();
       const text = envelope.dataMessage?.message || "";
+      const groupId = envelope.dataMessage?.groupInfo?.groupId;
+
+      // Compute reply target - send to group if from group, otherwise to sender
+      replyTo = groupId || phoneNumber;
 
       logger.debug(
         {
@@ -694,7 +701,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
           recentRejections.set(phoneNumber, now);
           await sendSignalMessage(
             deps.signalClient,
-            phoneNumber,
+            replyTo,
             "Entschuldigung, ich bin ein privater Familienbot und kann nur mit registrierten Familienmitgliedern kommunizieren.",
           );
         }
@@ -706,7 +713,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         logger.debug({ messageId, phoneNumber }, "Non-text message rejected");
         await sendSignalMessage(
           deps.signalClient,
-          phoneNumber,
+          replyTo,
           "Ich kann leider nur Textnachrichten verarbeiten.",
         );
         return;
@@ -735,7 +742,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       // Command detection - handle help/cancel before LLM
       const command = detectCommand(text);
       if (command) {
-        await handleCommand(command, phoneNumber, deps);
+        await handleCommand(command, phoneNumber, replyTo, deps);
         return;
       }
 
@@ -775,7 +782,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       );
 
       // Send response via Signal
-      await sendSignalMessage(deps.signalClient, phoneNumber, response);
+      await sendSignalMessage(deps.signalClient, replyTo, response);
 
       // Add assistant response to history
       await deps.conversationStore.addToHistory(
@@ -799,11 +806,11 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
       );
 
       // Attempt to send error response to user
-      if (phoneNumber) {
+      if (replyTo) {
         try {
           await sendSignalMessage(
             deps.signalClient,
-            phoneNumber,
+            replyTo,
             "Entschuldigung, da ist was schiefgelaufen. Probier's nochmal.",
           );
         } catch (sendError) {
