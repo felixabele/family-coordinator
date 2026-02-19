@@ -822,6 +822,37 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         "Intent extracted successfully",
       );
 
+      // In group chats, silently ignore non-calendar intents
+      const isGroupChat = !!groupId;
+      const isCalendarAction = [
+        "create_event",
+        "query_events",
+        "update_event",
+        "delete_event",
+      ].includes(intent.intent);
+
+      if (isGroupChat && !isCalendarAction) {
+        logger.debug(
+          { phoneNumber, intent: intent.intent, groupId },
+          "Non-calendar message in group chat ignored",
+        );
+        return;
+      }
+
+      // In group chats, also ignore very low confidence calendar intents (likely not directed at bot)
+      if (isGroupChat && isCalendarAction && intent.confidence < 0.5) {
+        logger.debug(
+          {
+            phoneNumber,
+            intent: intent.intent,
+            confidence: intent.confidence,
+            groupId,
+          },
+          "Low-confidence calendar intent in group chat ignored",
+        );
+        return;
+      }
+
       // Get member name for personalization
       const memberName = deps.familyWhitelist.getName(phoneNumber);
 
