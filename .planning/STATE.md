@@ -13,7 +13,7 @@ Milestone: Phase 6 - GitHub CI/CD Pipeline
 Current Phase: 06-github-ci-cd-pipeline
 Current Plan: 2 (of 2)
 Status: Complete
-Last activity: 2026-02-19 - Completed quick task 6: Silently ignore non-text messages
+Last activity: 2026-02-19 - Completed quick task 7: Silently ignore non-calendar text messages in group chats
 
 Progress: [██████████] 100%
 
@@ -89,14 +89,15 @@ None — clean slate for next milestone.
 | 4   | Multi-day events should default to all-day                   | 2026-02-17 | ad2309f | [4-multi-day-events](./quick/4-multi-day-events-should-default-to-all-d/)                             |
 | 5   | Fix delete/update event not finding events without date      | 2026-02-17 | 645d4e7 | [5-fix-delete-event](./quick/5-fix-delete-event-not-finding-events-when/5-fix-delete-event-not-find/) |
 | 6   | Silently ignore non-text messages (no reply in group chats)  | 2026-02-19 | c5c5154 | [6-calendar-agent-should-silently-ignore-no](./quick/6-calendar-agent-should-silently-ignore-no/)     |
+| 7   | Silently ignore non-calendar text messages in group chats    | 2026-02-19 | 1c7ced3 | [7-silently-ignore-non-calendar-text-messag](./quick/7-silently-ignore-non-calendar-text-messag/)     |
 
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed quick task 6 (Silently ignore non-text messages)
+Stopped at: Completed quick task 7 (Silently ignore non-calendar text messages in group chats)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-19 — Completed quick task 6: Silently ignore non-text messages_
+_Last updated: 2026-02-19 — Completed quick task 7: Silently ignore non-calendar text messages in group chats_
