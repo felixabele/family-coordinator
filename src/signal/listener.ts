@@ -693,7 +693,7 @@ async function handleIntent(
  *
  * Registers an event handler that:
  * 1. Receives incoming Signal messages
- * 2. Filters out non-text and group messages
+ * 2. Silently ignores non-text messages (images, stickers, reactions, etc.)
  * 3. Checks idempotency to prevent duplicate processing
  * 4. Extracts intent via Claude LLM
  * 5. Performs calendar operations
@@ -765,14 +765,9 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         return;
       }
 
-      // Non-text message rejection
+      // Non-text message — silently ignore (no reply, especially important in group chats)
       if (!text) {
-        logger.debug({ messageId, phoneNumber }, "Non-text message rejected");
-        await sendSignalMessage(
-          deps.signalClient,
-          replyTo,
-          "Ich kann leider nur Textnachrichten verarbeiten.",
-        );
+        logger.debug({ messageId, phoneNumber }, "Non-text message ignored");
         return;
       }
 
