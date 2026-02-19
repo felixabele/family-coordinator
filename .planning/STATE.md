@@ -88,14 +88,15 @@ None — clean slate for next milestone.
 | 3   | Fix group chat replies going to 1-to-1 instead of group      | 2026-02-17 | 5340202 | [3-fix-group-chat-replies](./quick/3-fix-group-chat-replies-going-to-1-to-1-i/)                       |
 | 4   | Multi-day events should default to all-day                   | 2026-02-17 | ad2309f | [4-multi-day-events](./quick/4-multi-day-events-should-default-to-all-d/)                             |
 | 5   | Fix delete/update event not finding events without date      | 2026-02-17 | 645d4e7 | [5-fix-delete-event](./quick/5-fix-delete-event-not-finding-events-when/5-fix-delete-event-not-find/) |
+| 6   | Silently ignore non-text messages (no reply in group chats)  | 2026-02-19 | c5c5154 | [6-calendar-agent-should-silently-ignore-no](./quick/6-calendar-agent-should-silently-ignore-no/)     |
 
 ## Session Continuity
 
-Last session: 2026-02-17
-Stopped at: Completed quick task 5 (Delete/update searches 30 days when no date)
+Last session: 2026-02-19
+Stopped at: Completed quick task 6 (Silently ignore non-text messages)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-17 — Completed quick task 5: Delete/update searches 30 days when no date_
+_Last updated: 2026-02-19 — Completed quick task 6: Silently ignore non-text messages_
