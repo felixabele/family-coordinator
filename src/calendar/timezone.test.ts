@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { formatDayName } from "./timezone";
+import { formatDayName } from "./timezone.js";
 
 describe("formatDayName", () => {
   const tz = "Europe/Berlin";
