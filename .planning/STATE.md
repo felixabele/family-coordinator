@@ -1,3 +1,21 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+current_phase: 06.1-fix-wrong-calender-day-mapping
+current_plan: 1 (of 1)
+status: completed
+stopped_at: Completed 06.1-01-PLAN.md
+last_updated: "2026-03-16T16:42:00.000Z"
+last_activity: "2026-03-16 - Completed phase 06.1: Fix wrong calendar day mapping"
+progress:
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
+  percent: 100
+---
+
 # Project State
 
 ## Project Reference
@@ -9,11 +27,11 @@ See: .planning/PROJECT.md (updated 2026-02-16)
 
 ## Current Position
 
-Milestone: Phase 6 - GitHub CI/CD Pipeline
-Current Phase: 06-github-ci-cd-pipeline
-Current Plan: 2 (of 2)
+Milestone: Phase 6.1 - Fix Wrong Calendar Day Mapping
+Current Phase: 06.1-fix-wrong-calender-day-mapping
+Current Plan: 1 (of 1)
 Status: Complete
-Last activity: 2026-02-19 - Completed quick task 7: Silently ignore non-calendar text messages in group chats
+Last activity: 2026-03-16 - Completed phase 06.1: Fix wrong calendar day mapping
 
 Progress: [██████████] 100%
 
@@ -40,11 +58,22 @@ Progress: [██████████] 100%
 | 06-01 | CI validation pipeline         | 0.8 min  | 2026-02-17 06:42:12 | 2     | 3     | 2       |
 | 06-02 | Production deployment workflow | 1.0 min  | 2026-02-17 06:45:14 | 2     | 2     | 2       |
 
+**Phase 06.1-fix-wrong-calender-day-mapping Metrics:**
+
+| Plan    | Name                           | Duration | Completed           | Tasks | Files | Commits |
+| ------- | ------------------------------ | -------- | ------------------- | ----- | ----- | ------- |
+| 06.1-01 | Fix wrong calendar day mapping | 3.4 min  | 2026-03-16 16:42:00 | 3     | 1     | 3       |
+
 _Updated after each plan completion_
 
 ## Accumulated Context
 
 ### Decisions
+
+**Phase 06.1-fix-wrong-calender-day-mapping:**
+
+- formatDayName function is correct - no code change needed (01-01)
+- Bug root cause is likely LLM date resolution, not display formatting (01-01)
 
 **Phase 06-github-ci-cd-pipeline:**
 
@@ -74,6 +103,7 @@ None.
 
 - Phase 5 added: Deployment
 - Phase 6 added: github ci-cd pipeline
+- Phase 6.1 inserted after Phase 6: Fix wrong calender day mapping (URGENT)
 
 ### Blockers/Concerns
 
@@ -93,11 +123,11 @@ None — clean slate for next milestone.
 
 ## Session Continuity
 
-Last session: 2026-02-19
-Stopped at: Completed quick task 7 (Silently ignore non-calendar text messages in group chats)
+Last session: 2026-03-16
+Stopped at: Completed 06.1-01-PLAN.md (Fix wrong calendar day mapping)
 Resume file: None
 
 ---
 
 _State initialized: 2026-02-13_
-_Last updated: 2026-02-19 — Completed quick task 7: Silently ignore non-calendar text messages in group chats_
+_Last updated: 2026-03-16 — Completed phase 06.1: Fix wrong calendar day mapping_

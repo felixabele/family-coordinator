@@ -53,3 +53,14 @@ Plans:
 
 _Roadmap created: 2026-02-13_
 _Last updated: 2026-02-17 — Phase 6 GitHub CI/CD Pipeline complete_
+
+### Phase 06.1: Fix wrong calender day mapping (INSERTED)
+
+**Goal:** [Urgent work - to be planned]
+**Requirements**: TBD
+**Depends on:** Phase 6
+**Plans:** 1/1 plans complete
+
+Plans:
+
+- [x] TBD (run /gsd:plan-phase 06.1 to break down) (completed 2026-03-16)
