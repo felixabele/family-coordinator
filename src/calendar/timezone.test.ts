@@ -65,4 +65,22 @@ describe("formatDayName", () => {
       expect(result1).toBe("Freitag");
     });
   });
+
+  // Regression test: weekend query scenario from bug report
+  // Bug: Friday events were displayed as Saturday when asking "what do we do this weekend"
+  describe("weekend query scenario (regression)", () => {
+    it("should correctly identify Friday before weekend as Freitag, not Samstag", () => {
+      // This was the reported bug: Friday events showing as Saturday
+      expect(formatDayName("2026-03-20", tz)).toBe("Freitag");
+      expect(formatDayName("2026-03-20", tz)).not.toBe("Samstag");
+    });
+
+    it("should correctly identify Saturday in weekend as Samstag", () => {
+      expect(formatDayName("2026-03-21", tz)).toBe("Samstag");
+    });
+
+    it("should correctly identify Sunday in weekend as Sonntag", () => {
+      expect(formatDayName("2026-03-22", tz)).toBe("Sonntag");
+    });
+  });
 });
