@@ -30,7 +30,7 @@ Signal ← signal-cli (daemon) → Listener → Claude LLM → Signal Response
 
 ```bash
 git clone <repo-url>
-cd family-cordinator
+cd family-coordinator
 npm install
 ```
 
@@ -204,20 +204,22 @@ signal-cli -u +YOUR_OTHER_NUMBER send -m "Was steht heute an?" +BOT_PHONE_NUMBER
 
 ## Scripts
 
-| Script     | Command           | Description                            |
-| ---------- | ----------------- | -------------------------------------- |
-| Dev server | `npm run dev`     | Start with hot-reload (tsx watch)      |
-| Production | `npm start`       | Start with Node 22 native TS stripping |
-| Type check | `npm run build`   | Run TypeScript compiler (no emit)      |
-| Migrate    | `npm run migrate` | Apply database migrations              |
-| Format     | `npm run format`  | Format code with Prettier              |
-| Test       | `npm test`        | Run tests with vitest                  |
+| Script     | Command                | Description                            |
+| ---------- | ---------------------- | -------------------------------------- |
+| Dev server | `npm run dev`          | Start with hot-reload (tsx watch)      |
+| Production | `npm start`            | Start with Node 22 native TS stripping |
+| Type check | `npm run build`        | Run TypeScript compiler                |
+| Migrate    | `npm run migrate`      | Apply database migrations              |
+| Format     | `npm run format`       | Format code with Prettier              |
+| Fmt check  | `npm run format:check` | Check formatting without writing       |
+| Test       | `npm test`             | Run tests with vitest                  |
 
 ## Project Structure
 
 ```
 src/
   index.ts              # Entry point — loads config, connects Signal, starts listener
+  health.ts             # Health check HTTP server for monitoring
   config/
     env.ts              # Zod-validated environment variables
     constants.ts        # App constants (timeouts, limits, help text)
@@ -229,7 +231,9 @@ src/
     types.ts            # Signal message TypeScript types
   calendar/
     client.ts           # Google Calendar API client (googleapis)
+    conflicts.ts        # Scheduling conflict detection
     operations.ts       # Calendar CRUD operations (list, create, update, delete)
+    recurring.ts        # Recurring event (RRULE) handling
     timezone.ts         # Timezone utilities for DST-safe date handling
     types.ts            # Calendar event TypeScript types
   llm/
@@ -247,6 +251,7 @@ src/
     migrations/
       001_init.sql      # conversations + message_log tables
       002_idempotency.sql # processed_messages table
+      003_widen_phone_columns.sql # Widen phone columns for international formats
   utils/
     logger.ts           # Pino logger (pretty in dev, JSON in prod)
     errors.ts           # Custom error classes

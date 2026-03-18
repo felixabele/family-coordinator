@@ -114,6 +114,7 @@ async function handleIntent(
   deps: MessageListenerDeps,
   memberName?: string,
   phoneNumber?: string,
+  rawText?: string,
 ): Promise<string> {
   const tz = deps.calendarClient.timezone;
 
@@ -122,7 +123,11 @@ async function handleIntent(
     const state = await deps.conversationStore.getState(phoneNumber);
 
     if (state?.currentIntent === "awaiting_conflict_confirmation") {
-      const userResponse = intent.entities.title?.toLowerCase() || "";
+      const userResponse = (
+        rawText ||
+        intent.entities.title ||
+        ""
+      ).toLowerCase();
       const isAffirmative =
         userResponse.includes("ja") ||
         userResponse.includes("ok") ||
@@ -211,7 +216,11 @@ async function handleIntent(
 
     // Check for pending delete scope confirmation
     if (state?.currentIntent === "awaiting_delete_scope") {
-      const userResponse = intent.entities.title?.toLowerCase() || "";
+      const userResponse = (
+        rawText ||
+        intent.entities.title ||
+        ""
+      ).toLowerCase();
       const isThisOnly =
         userResponse.includes("1") ||
         userResponse.includes("dieses") ||
@@ -862,6 +871,7 @@ export function setupMessageListener(deps: MessageListenerDeps): void {
         deps,
         memberName,
         phoneNumber,
+        text,
       );
 
       // Send response via Signal
